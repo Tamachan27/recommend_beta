@@ -45,10 +45,10 @@
         .analyze-btn:disabled { background: #27272a; color: #52525b; cursor: not-allowed; }
 
         /* 結果表示オーバーレイ */
-        #result-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; padding: 20px 10px; box-sizing: border-box;}
+        #result-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; overflow-y: auto; padding: 20px 10px; box-sizing: border-box;}
         
         /* 画像として保存する範囲 */
-        #capture-area { background: #fff; color: #000; border-radius: 32px; overflow: hidden; width: 100%; max-width: 450px; margin: 0 auto; }
+        #capture-area { background: #fff; color: #000; border-radius: 32px; overflow: hidden; width: 100%; max-width: 450px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
         .card-top { background: #000; padding: 40px 20px; text-align: center; color: white; }
         .card-content { padding: 30px 25px; text-align: center; }
         .res-title { font-size: 1.6rem; font-weight: 900; color: #000; margin-bottom: 10px; }
@@ -60,18 +60,22 @@
         .match-perfect { background: #000; color: #fff; border-color: #000; }
 
         /* 操作ボタン */
-        .action-container { width: 100%; max-width: 450px; margin: 20px auto; display: flex; flex-direction: column; gap: 15px; }
-        .save-btn { background: var(--accent-l); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; cursor: pointer; width: 100%; font-size: 1rem;}
+        .action-container { width: 100%; max-width: 450px; margin: 25px auto 40px; display: flex; flex-direction: column; gap: 15px; }
+        .save-btn { background: var(--accent-l); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; cursor: pointer; width: 100%; font-size: 1rem; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
         
         .sns-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .sns-btn { padding: 14px; border-radius: 12px; text-decoration: none; color: white; font-size: 0.75rem; font-weight: 800; text-align: center; }
-        .x-btn { background: #000; }
+        .sns-btn { padding: 14px; border-radius: 12px; text-decoration: none; color: white; font-size: 0.75rem; font-weight: 800; text-align: center; transition: 0.2s; }
+        
+        /* ▼ Xボタンの修正箇所 ▼ */
+        .x-btn { background: #18181b; border: 1px solid rgba(255,255,255,0.2); }
+        .x-btn:hover { background: #27272a; border-color: rgba(255,255,255,0.4); }
+        
         .ig-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         .dc-btn { background: #5865F2; }
         .ln-btn { background: #06C755; }
 
-        .spotify-container { margin-top: 30px; border-radius: 12px; overflow: hidden; }
-        .retry-text { text-align: center; color: var(--text-dim); font-size: 0.8rem; margin-top: 30px; cursor: pointer; text-decoration: underline; }
+        .spotify-container { margin-top: 30px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .retry-text { text-align: center; color: var(--text-dim); font-size: 0.8rem; margin-top: 30px; cursor: pointer; text-decoration: underline; padding-bottom: 30px;}
     </style>
 </head>
 <body>
@@ -115,7 +119,7 @@
 
         <div class="spotify-container">
             <p style="color: #a1a1aa; font-size: 0.7rem; text-align: center; margin-bottom: 10px;">CREATOR'S PLAYLIST</p>
-            <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/playlist/075m99X9W4vPia0pT097Dk" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4X1E2Y3Z5A0Q6B7W8C9D?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         </div>
 
         <div class="retry-text" onclick="location.reload()">もう一度診断する</div>
@@ -123,6 +127,7 @@
 </div>
 
 <script>
+    // ★ スプレッドシートのURL
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRyt_I_8kDlfPnMSxsVSYBcytr3ur76vs7xmF30t01RFQUkAlULzF8P1oLlsFdLcyMZrQCMj3PAANV/pub?output=csv';
     
     const questions = [
@@ -229,15 +234,18 @@
 
     async function saveAsImage() {
         const area = document.getElementById('capture-area');
-        const canvas = await html2canvas(area, { backgroundColor: null, scale: 2 });
+        // 画像生成時の倍率を上げて高画質に
+        const canvas = await html2canvas(area, { backgroundColor: null, scale: 3 });
         const link = document.createElement('a');
         link.download = 'MUSIC_DNA_RESULT.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
-        alert('画像を保存しました！InstagramやDiscordでシェアしてね！');
     }
 
     init();
+</script>
+</body>
+</html>
 </script>
 </body>
 </html>
