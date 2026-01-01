@@ -7,47 +7,40 @@
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root { --bg: #050505; --card-inner: #121212; --accent-l: #6366f1; --accent-r: #ec4899; --text: #ffffff; --text-dim: #a1a1aa; }
-        body { font-family: "Inter", "Hiragino Kaku Gothic ProN", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; line-height: 1.6; }
+        body { font-family: "Inter", "Hiragino Kaku Gothic ProN", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         header { text-align: center; padding: 60px 0 40px; }
         header h1 { font-size: 2rem; letter-spacing: 6px; font-weight: 900; margin: 0; background: linear-gradient(90deg, var(--accent-l), var(--accent-r)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        header p { font-size: 0.8rem; color: var(--text-dim); margin-top: 15px; letter-spacing: 1px;}
+        #loading-status { text-align: center; font-size: 0.7rem; color: #4ade80; margin-top: 10px; height: 1em; }
 
-        /* デバッグ用：読み込み状態を表示 */
-        #loading-status { text-align: center; font-size: 0.7rem; color: #4ade80; margin-bottom: 20px; }
-
-        .question-wrapper { display: flex; flex-direction: column; gap: 30px; margin-bottom: 60px; }
-        .q-container { background: var(--card-inner); border-radius: 24px; padding: 25px; border: 1px solid #27272a; }
-        .q-header { font-size: 0.7rem; font-weight: bold; color: var(--text-dim); margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 2px; text-align: center; }
-        .choice-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .choice-btn { background: #18181b; border: 2px solid #27272a; color: white; padding: 20px 12px; border-radius: 16px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.3s; min-height: 100px; display: flex; align-items: center; justify-content: center; text-align: center; }
+        .question-wrapper { display: flex; flex-direction: column; gap: 20px; margin-bottom: 60px; }
+        .q-container { background: var(--card-inner); border-radius: 20px; padding: 25px; border: 1px solid #27272a; }
+        .q-header { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 15px; display: block; text-align: center; letter-spacing: 2px; }
+        .choice-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .choice-btn { background: #18181b; border: 2px solid #27272a; color: white; padding: 15px 10px; border-radius: 12px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; min-height: 80px; }
         .choice-btn.active { border-color: var(--accent-l); background: rgba(99, 102, 241, 0.1); }
 
-        .footer-action { text-align: center; padding-bottom: 100px; }
-        .analyze-btn { background: white; color: black; border: none; padding: 20px 50px; border-radius: 50px; font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: 0.3s; }
-        .analyze-btn:disabled { background: #27272a; color: #52525b; cursor: not-allowed; }
+        .analyze-btn { width: 100%; max-width: 300px; background: white; color: black; border: none; padding: 20px; border-radius: 50px; font-size: 1rem; font-weight: 900; cursor: pointer; display: block; margin: 0 auto 100px; }
+        .analyze-btn:disabled { background: #27272a; color: #52525b; }
 
         #result-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; overflow-y: auto; padding: 20px 10px; box-sizing: border-box;}
-        #capture-area { background: #fff; color: #000; border-radius: 32px; overflow: hidden; width: 100%; max-width: 450px; margin: 0 auto; }
-        .card-top { background: #000; padding: 40px 20px; text-align: center; color: white; }
+        #capture-area { background: #fff; color: #000; border-radius: 32px; overflow: hidden; width: 100%; max-width: 400px; margin: 0 auto; }
+        .card-top { background: #000; padding: 30px 20px; text-align: center; color: white; }
         .card-content { padding: 30px 25px; text-align: center; }
-        .res-title { font-size: 1.6rem; font-weight: 900; color: #000; margin-bottom: 10px; }
-        .res-desc { font-size: 0.9rem; color: #4b5563; line-height: 1.6; margin-bottom: 25px; }
+        .res-title { font-size: 1.4rem; font-weight: 900; color: #000; margin-bottom: 10px; line-height: 1.2; }
+        .res-desc { font-size: 0.85rem; color: #4b5563; margin-bottom: 25px; }
 
-        .artist-tag-box { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; }
-        .artist-chip { background: #f3f4f6; padding: 6px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; color: #1f2937; border: 1px solid #e5e7eb; }
+        .artist-tag-box { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+        .artist-chip { background: #f3f4f6; padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color: #1f2937; border: 1px solid #e5e7eb; }
         .match-perfect { background: #000; color: #fff; border-color: #000; }
 
-        .action-container { width: 100%; max-width: 450px; margin: 25px auto 40px; display: flex; flex-direction: column; gap: 15px; }
-        .save-btn { background: var(--accent-l); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; cursor: pointer; font-size: 1rem;}
-        
+        .action-container { width: 100%; max-width: 400px; margin: 20px auto; display: flex; flex-direction: column; gap: 12px; }
+        .save-btn { background: var(--accent-l); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; cursor: pointer; }
         .sns-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .sns-btn { padding: 14px; border-radius: 12px; text-decoration: none; color: white; font-size: 0.75rem; font-weight: 800; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
-        .x-btn { background: #18181b; border-color: rgba(255,255,255,0.3); }
-        .ig-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
-        .dc-btn { background: #5865F2; }
-        .ln-btn { background: #06C755; }
-        .retry-text { text-align: center; color: var(--text-dim); font-size: 0.8rem; margin-top: 30px; cursor: pointer; text-decoration: underline; padding-bottom: 30px;}
+        .sns-btn { padding: 12px; border-radius: 12px; text-decoration: none; color: white; font-size: 0.7rem; font-weight: 800; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
+        .x-btn { background: #111; }
+        .ig-btn { background: linear-gradient(45deg, #f09433, #bc1888); }
+        .retry-text { text-align: center; color: var(--text-dim); font-size: 0.7rem; margin-top: 20px; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -55,25 +48,22 @@
 <div class="container">
     <header>
         <h1>MUSIC DNA</h1>
-        <p>15の直感。あなたの音楽的本能を可視化する。</p>
-        <div id="loading-status">アーティストデータを読み込み中...</div>
+        <div id="loading-status">Loading Data...</div>
     </header>
     <div class="question-wrapper" id="q-list"></div>
-    <div class="footer-action">
-        <button id="analyze-btn" class="analyze-btn" disabled onclick="showResult()">分析を開始する</button>
-    </div>
+    <button id="analyze-btn" class="analyze-btn" disabled onclick="showResult()">分析を開始する</button>
 </div>
 
 <div id="result-overlay">
     <div id="capture-area">
         <div class="card-top">
-            <div style="font-size: 0.6rem; letter-spacing: 4px; color: #71717a;">MUSIC DNA REPORT</div>
-            <div style="font-size: 1.2rem; font-weight: 900; margin-top: 8px;">CERTIFIED LISTENER</div>
+            <div style="font-size: 0.5rem; letter-spacing: 3px; color: #71717a;">MUSIC DNA REPORT</div>
+            <div style="font-size: 1rem; font-weight: 900; margin-top: 5px;">CERTIFIED LISTENER</div>
         </div>
         <div class="card-content">
-            <div id="res-title" class="res-title">称号</div>
-            <p id="res-desc" class="res-desc">説明文</p>
-            <div style="font-size: 0.6rem; font-weight: 800; color: #9ca3af; letter-spacing: 2px; margin-bottom: 10px;">DNA MATCH ARTISTS</div>
+            <div id="res-title" class="res-title">-</div>
+            <p id="res-desc" class="res-desc">-</p>
+            <div style="font-size: 0.5rem; font-weight: 800; color: #9ca3af; letter-spacing: 2px; margin-bottom: 10px;">DNA MATCH ARTISTS</div>
             <div id="artist-match-list" class="artist-tag-box"></div>
         </div>
     </div>
@@ -82,8 +72,6 @@
         <div class="sns-grid">
             <a id="share-x" href="#" target="_blank" class="sns-btn x-btn">Xでシェア</a>
             <a href="https://www.instagram.com/" target="_blank" class="sns-btn ig-btn">Instagram</a>
-            <a href="https://discord.com/" target="_blank" class="sns-btn dc-btn">Discord</a>
-            <a id="share-line" href="#" target="_blank" class="sns-btn ln-btn">LINE</a>
         </div>
         <div class="retry-text" onclick="location.reload()">もう一度診断する</div>
     </div>
@@ -92,7 +80,6 @@
 <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRyt_I_8kDlfPnMSxsVSYBcytr3ur76vs7xmF30t01RFQUkAlULzF8P1oLlsFdLcyMZrQCMj3PAANV/pub?output=csv';
     
-    // ... (questions, titleMapは変更なしのため省略して実装しますが、動作には必要です)
     const questions = [
         { a: "爆音のロックで解放されたい", b: "一緒に沈んでくれる曲に救われたい", catA: "energy", catB: "deep" },
         { a: "ライブで盛り上がるナンバー", b: "お洒落で洗練されたチルな時間", catA: "energy", catB: "aesthetic" },
@@ -135,20 +122,17 @@
         try {
             const res = await fetch(SHEET_URL);
             const csvText = await res.text();
-            // 改行コードの差異を吸収して分割
             const rows = csvText.split(/\r?\n/).slice(1);
             artistMaster = rows.map(row => {
                 const cols = row.split(',');
                 if (cols.length < 2) return null;
-                // タグのパース（カンマやドット、前後の空白を考慮）
-                const tags = cols[1].toLowerCase().replace(/\./g, ',').split(',').map(t => t.trim());
+                // 全角カンマやドット、大文字小文字、空白をすべて正規化
+                const tags = cols[1].toLowerCase().replace(/[．。、]/g, ',').split(/[,.]/).map(t => t.trim());
                 return { name: cols[0].trim().replace(/^"|"$/g, ''), tags: tags };
             }).filter(a => a && a.name);
-
-            document.getElementById('loading-status').innerText = `✅ ${artistMaster.length}名のアーティストを同期済み`;
+            document.getElementById('loading-status').innerText = `✅ ${artistMaster.length} Artists Synced`;
         } catch(e) {
-            document.getElementById('loading-status').innerText = `❌ データの読み込みに失敗しました`;
-            console.error(e);
+            document.getElementById('loading-status').innerText = `❌ Sync Failed`;
         }
         render();
     }
@@ -183,27 +167,23 @@
         document.getElementById('res-title').innerText = res[0];
         document.getElementById('res-desc').innerText = res[1];
 
-        // アーティストマッチング
+        // マッチング判定（閾値を下げてより出やすく修正）
         const matched = artistMaster.map(a => {
             let pts = 0;
-            if(a.tags.includes(t1)) pts += 10;
-            if(a.tags.includes(t2)) pts += 5;
+            if(a.tags.some(tag => tag.includes(t1))) pts += 10;
+            if(a.tags.some(tag => tag.includes(t2))) pts += 5;
             return {...a, pts};
-        }).filter(a => a.pts >= 10).sort((a,b)=>b.pts-a.pts).slice(0, 8);
+        }).filter(a => a.pts >= 5) // 2位の属性が一致するだけでも表示
+          .sort((a,b)=>b.pts-a.pts).slice(0, 10);
 
         const listContainer = document.getElementById('artist-match-list');
         if (matched.length === 0) {
             listContainer.innerHTML = '<p style="font-size:0.7rem; color:#999;">あなたの感性は唯一無二のようです。</p>';
         } else {
             listContainer.innerHTML = matched.map(a=>
-                `<div class="artist-chip ${a.pts>=15?'match-perfect':''}">${a.name}</div>`
+                `<div class="artist-chip ${a.pts>=10?'match-perfect':''}">${a.name}</div>`
             ).join('');
         }
-
-        const txt = encodeURIComponent(`私の音楽DNAは《${res[0]}》でした！\n#MUSIC_DNA\n`);
-        const url = encodeURIComponent(window.location.href);
-        document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${txt}&url=${url}`;
-        document.getElementById('share-line').href = `https://social-plugins.line.me/lineit/share?url=${url}`;
 
         document.getElementById('result-overlay').style.display = 'block';
         window.scrollTo(0,0);
