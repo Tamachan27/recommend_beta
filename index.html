@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUSIC DNA - ULTIMATE CHOICE</title>
+    <title>MUSIC DNA - 究極の音楽属性診断</title>
     <style>
         :root {
             --bg: #050505;
             --card-inner: #121212;
-            --accent-l: #6366f1; /* Left Color */
-            --accent-r: #ec4899; /* Right Color */
+            --accent-l: #6366f1;
+            --accent-r: #ec4899;
             --text: #ffffff;
             --text-dim: #a1a1aa;
         }
@@ -20,6 +20,7 @@
             color: var(--text);
             margin: 0;
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
         .container {
@@ -30,12 +31,12 @@
 
         header {
             text-align: center;
-            padding: 40px 0;
+            padding: 60px 0 40px;
         }
 
         header h1 {
-            font-size: 1.5rem;
-            letter-spacing: 4px;
+            font-size: 2rem;
+            letter-spacing: 6px;
             font-weight: 900;
             margin: 0;
             background: linear-gradient(90deg, var(--accent-l), var(--accent-r));
@@ -44,98 +45,99 @@
         }
 
         header p {
-            font-size: 0.8rem;
+            font-size: 0.9rem;
             color: var(--text-dim);
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
-        /* 質問リスト */
+        /* 質問エリア */
         .question-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 30px;
-            margin-bottom: 60px;
+            gap: 40px;
+            margin-bottom: 80px;
         }
 
         .q-container {
             background: var(--card-inner);
-            border-radius: 24px;
-            padding: 24px;
+            border-radius: 28px;
+            padding: 30px;
             border: 1px solid #27272a;
+            transition: transform 0.3s ease;
         }
 
         .q-header {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             font-weight: bold;
             color: var(--text-dim);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             display: block;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            text-align: center;
         }
 
-        /* 2択ボタンのデザイン */
         .choice-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 16px;
         }
 
         .choice-btn {
-            position: relative;
             background: #18181b;
             border: 2px solid #27272a;
             color: white;
-            padding: 20px 15px;
-            border-radius: 16px;
+            padding: 24px 16px;
+            border-radius: 20px;
             cursor: pointer;
             font-size: 0.9rem;
             font-weight: 600;
-            line-height: 1.5;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            min-height: 100px;
+            min-height: 120px;
         }
 
-        /* 左側選択時 */
         .choice-btn.left.active {
             border-color: var(--accent-l);
-            background: rgba(99, 102, 241, 0.1);
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+            background: rgba(99, 102, 241, 0.15);
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px);
         }
 
-        /* 右側選択時 */
         .choice-btn.right.active {
             border-color: var(--accent-r);
-            background: rgba(236, 72, 153, 0.1);
-            box-shadow: 0 0 20px rgba(236, 72, 153, 0.2);
+            background: rgba(236, 72, 153, 0.15);
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.3);
+            transform: translateY(-2px);
         }
 
         /* 分析ボタン */
         .footer-action {
             text-align: center;
-            padding-bottom: 100px;
+            padding-bottom: 120px;
         }
 
         .analyze-btn {
             background: white;
             color: black;
             border: none;
-            padding: 20px 50px;
-            border-radius: 50px;
-            font-size: 1.1rem;
+            padding: 22px 60px;
+            border-radius: 60px;
+            font-size: 1.2rem;
             font-weight: 900;
             cursor: pointer;
             transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(255,255,255,0.1);
         }
 
         .analyze-btn:disabled {
             background: #27272a;
             color: #52525b;
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         /* 結果オーバーレイ */
@@ -143,35 +145,34 @@
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
+            background: rgba(0,0,0,0.95);
             z-index: 1000;
-            display: none;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
+            overflow-y: auto;
         }
 
-        /* 結果カード本体 */
         .result-card {
             background: #fff;
             color: #000;
             width: 100%;
-            max-width: 400px;
-            border-radius: 32px;
+            max-width: 450px;
+            border-radius: 40px;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            animation: cardIn 0.5s ease-out;
+            margin: auto;
+            animation: cardIn 0.6s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
         @keyframes cardIn {
-            from { opacity: 0; transform: scale(0.9) translateY(30px); }
+            from { opacity: 0; transform: scale(0.9) translateY(40px); }
             to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
         .card-top {
             background: #000;
-            padding: 40px 20px;
+            padding: 50px 20px;
             text-align: center;
             color: white;
         }
@@ -187,42 +188,80 @@
             margin: 10px 0;
             line-height: 1.2;
             letter-spacing: -1px;
+            color: #000;
         }
 
         .res-desc {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             color: #4b5563;
-            line-height: 1.7;
+            line-height: 1.8;
             margin-top: 20px;
         }
 
-        .share-box {
-            margin-top: 35px;
+        /* アーティスト表示 */
+        .artist-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .artist-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #9ca3af;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .artist-tag-box {
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             justify-content: center;
         }
 
+        .artist-chip {
+            background: #f3f4f6;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .match-perfect {
+            background: #000;
+            color: #fff;
+        }
+
+        .share-box {
+            margin-top: 40px;
+            display: flex;
+            gap: 12px;
+        }
+
         .share-btn {
             flex: 1;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 18px;
+            border-radius: 16px;
             text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: bold;
+            font-size: 0.85rem;
+            font-weight: 800;
             color: white;
+            display: block;
         }
 
         .x-btn { background: #000; }
         .line-btn { background: #06C755; }
 
-        .close-link {
+        .retry-link {
             display: block;
-            margin-top: 25px;
+            margin-top: 30px;
             font-size: 0.8rem;
             color: #9ca3af;
             cursor: pointer;
-            text-decoration: underline;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -231,11 +270,10 @@
 <div class="container">
     <header>
         <h1>MUSIC DNA</h1>
-        <p>15の究極の二択。あなたの本能が選ぶのは？</p>
+        <p>15の究極選択。あなたの本能が選ぶのは？</p>
     </header>
 
-    <div class="question-wrapper" id="q-list">
-        </div>
+    <div class="question-wrapper" id="q-list"></div>
 
     <div class="footer-action">
         <button id="analyze-btn" class="analyze-btn" disabled onclick="showResult()">DNAを分析する</button>
@@ -245,23 +283,31 @@
 <div id="result-overlay">
     <div class="result-card">
         <div class="card-top">
-            <div style="font-size: 0.7rem; letter-spacing: 3px; color: #71717a;">ANALYSIS COMPLETED</div>
-            <div style="font-size: 1.2rem; font-weight: 900; margin-top: 10px;">CERTIFIED LISTENER</div>
+            <div style="font-size: 0.7rem; letter-spacing: 4px; color: #71717a;">ANALYSIS COMPLETED</div>
+            <div style="font-size: 1.4rem; font-weight: 900; margin-top: 10px;">CERTIFIED LISTENER</div>
         </div>
         <div class="card-content">
             <div id="res-title" class="res-title">称号</div>
             <p id="res-desc" class="res-desc">説明文</p>
             
+            <div class="artist-section">
+                <span class="artist-label">DNA MATCH ARTISTS</span>
+                <div id="artist-match-list" class="artist-tag-box"></div>
+            </div>
+
             <div class="share-box">
                 <a href="#" id="share-x" target="_blank" class="share-btn x-btn">X SHARE</a>
                 <a href="#" id="share-line" target="_blank" class="share-btn line-btn">LINE</a>
             </div>
-            <span class="close-link" onclick="location.reload()">RETRY</span>
+            <span class="retry-link" onclick="location.reload()">もう一度診断する</span>
         </div>
     </div>
 </div>
 
 <script>
+    // ★ スプレッドシートのURL
+    const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRyt_I_8kDlfPnMSxsVSYBcytr3ur76vs7xmF30t01RFQUkAlULzF8P1oLlsFdLcyMZrQCMj3PAANV/pub?output=csv';
+
     const questions = [
         { a: "爆音のロックで<br>解放されたい", b: "一緒に沈んでくれる曲に<br>救われたい", catA: "energy", catB: "deep" },
         { a: "ライブで盛り上がる<br>ダンスナンバー", b: "お洒落で洗練された<br>チルな時間", catA: "energy", catB: "aesthetic" },
@@ -281,20 +327,41 @@
     ];
 
     const answers = new Array(questions.length).fill(null);
-    const qList = document.getElementById('q-list');
+    let artistMaster = [];
 
-    questions.forEach((q, idx) => {
-        const div = document.createElement('div');
-        div.className = 'q-container';
-        div.innerHTML = `
-            <span class="q-header">Phase ${idx + 1}</span>
-            <div class="choice-group">
-                <button class="choice-btn left" onclick="select(${idx}, 'A', this)">${q.a}</button>
-                <button class="choice-btn right" onclick="select(${idx}, 'B', this)">${q.b}</button>
-            </div>
-        `;
-        qList.appendChild(div);
-    });
+    // スプレッドシート読み込み
+    async function init() {
+        try {
+            const res = await fetch(SHEET_CSV_URL);
+            const csvText = await res.text();
+            const rows = csvText.split('\n').slice(1);
+            artistMaster = rows.map(row => {
+                const cols = row.split(',');
+                return { 
+                    name: cols[0]?.trim(), 
+                    tags: cols[1] ? cols[1].toLowerCase().split('.').map(t => t.trim()) : [] 
+                };
+            }).filter(a => a.name);
+        } catch (e) { console.error("Data load error", e); }
+        
+        renderQuestions();
+    }
+
+    function renderQuestions() {
+        const qList = document.getElementById('q-list');
+        questions.forEach((q, idx) => {
+            const div = document.createElement('div');
+            div.className = 'q-container';
+            div.innerHTML = `
+                <span class="q-header">Phase ${idx + 1}</span>
+                <div class="choice-group">
+                    <button class="choice-btn left" onclick="select(${idx}, 'A', this)">${q.a}</button>
+                    <button class="choice-btn right" onclick="select(${idx}, 'B', this)">${q.b}</button>
+                </div>
+            `;
+            qList.appendChild(div);
+        });
+    }
 
     function select(idx, type, btn) {
         answers[idx] = type;
@@ -302,11 +369,27 @@
         Array.from(parent.children).forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
-        const answeredCount = answers.filter(a => a !== null).length;
-        if (answeredCount === questions.length) {
+        if (answers.filter(a => a !== null).length === questions.length) {
             document.getElementById('analyze-btn').disabled = false;
         }
     }
+
+    const titleMap = {
+        "energy_skill": ["超絶技巧の熱狂的マエストロ", "激しさの中にある緻密な技術や構成の凄さを見抜く耳の持ち主。"],
+        "energy_dig": ["最前線を焼く爆音ハンター", "刺激と熱狂を求めて、未知の才能を掘り続ける開拓者。"],
+        "energy_deep": ["魂を震わせる情熱の代弁者", "明るい曲の中にも深いメッセージ性を求め、全力で感情移入する。"],
+        "energy_aesthetic": ["光り輝くステージの目撃者", "派手なパフォーマンスや洗練された美学を愛する。"],
+        "deep_skill": ["深淵を設計する音響哲学者", "物語性を大事にしつつ、その裏にある複雑な音の重なりを分析する。"],
+        "deep_dig": ["ネットの海底を漂う感情の観測者", "自分だけの孤独に寄り添う、まだ見ぬ歌をネットの底で探し続ける。"],
+        "deep_energy": ["静寂を切り裂く心の革命家", "内側に強い熱量を秘めており、エモーショナルな爆音に救いを見出す。"],
+        "deep_aesthetic": ["月夜に沈む美学の詩人", "美しい言葉選びと綺麗な旋律だけに浸り、自分だけの世界を作る。"],
+        "aesthetic_skill": ["完璧な余白を創る音響アーキテクト", "洗練された空気感と、それを支える高度な技巧を愛する。"],
+        "aesthetic_dig": ["トレンドの境界を歩く審美家", "常に最先端のセンスを持ち、ジャンルレスに「今かっこいい音」をキャッチする。"],
+        "aesthetic_energy": ["鮮やかに踊るアーバン・ダンサー", "洗練されたビートを好み、音楽で日常を鮮やかに彩る。"],
+        "aesthetic_deep": ["黄昏に寄り添うエモ・ドリーマー", "切ない歌詞に弱く、音楽を聴くことで物語の中に没入したい人。"],
+        "skill_dig": ["未踏の譜面を解く音の解析官", "誰も真似できない独自の演奏技術や、異質なサウンド構成に快感を覚える。"],
+        "skill_energy": ["精密に狂う情熱のメカニズム", "理性的でありながら熱い。完璧にコントロールされた狂気を愛する。"]
+    };
 
     function showResult() {
         let scores = { energy: 0, deep: 0, aesthetic: 0, skill: 0, dig: 0 };
@@ -315,37 +398,37 @@
             scores[cat]++;
         });
 
-        const main = [{id:'energy', v:scores.energy}, {id:'deep', v:scores.deep}, {id:'aesthetic', v:scores.aesthetic}].sort((a,b)=>b.v-a.v);
-        const sub = [{id:'skill', v:scores.skill}, {id:'dig', v:scores.dig}].sort((a,b)=>b.v-a.v);
-        
-        const top1 = main[0].id;
-        const top2 = (main[1].v >= sub[0].v) ? main[1].id : sub[0].id;
+        const sorted = Object.entries(scores).sort((a,b) => b[1] - a[1]);
+        const t1 = sorted[0][0];
+        const t2 = sorted[1][0];
 
-        const titleMap = {
-            "energy_skill": ["超絶技巧の熱狂的マエストロ", "激しさの中にある緻密な技術や構成の凄さを見抜く耳の持ち主。"],
-            "energy_dig": ["最前線を焼く爆音ハンター", "刺激と熱狂を求めて、インディーズからネット発まで掘り続ける開拓者。"],
-            "energy_deep": ["魂を震わせる情熱の代弁者", "明るい曲の中にも深いメッセージ性を求め、全力で音楽に感情移入する。"],
-            "energy_aesthetic": ["光り輝くステージの目撃者", "派手なパフォーマンスや洗練されたビジュアル、空間そのものを愛する。"],
-            "deep_skill": ["深淵を設計する音響哲学者", "物語性を大事にしつつ、その裏にある複雑な音の重なりを分析して楽しむ人。"],
-            "deep_dig": ["ネットの海底を漂う感情の観測者", "自分だけの孤独に寄り添う、まだ見ぬ誰かの歌をネットの底で探し続ける。"],
-            "deep_energy": ["静寂を切り裂く心の革命家", "内側に強い熱量を秘めており、エモーショナルな爆音に救いを見出す。"],
-            "deep_aesthetic": ["月夜に沈む美学の詩人", "深夜や雨の日に、美しい言葉選びと綺麗な旋律だけに浸り、自分だけの世界を作る。"],
-            "aesthetic_skill": ["完璧な余白を創る音響アーキテクト", "お洒落な雰囲気だけでなく、空間を構成する一つ一つの音色にこだわる人。"],
-            "aesthetic_dig": ["トレンドの境界を歩く審美家", "常に最先端のセンスを持ち、ジャンルレスに「今かっこいい音」をキャッチする。"],
-            "aesthetic_energy": ["鮮やかに踊るアーバン・ダンサー", "洗練された都会的なビートを好み、音楽で日常を鮮やかに彩るスタイル派。"],
-            "aesthetic_deep": ["黄昏に寄り添うエモ・ドリーマー", "切ない歌詞に弱く、音楽を聴くことで物語の中に没入したいロマンチスト。"]
-        };
+        const resData = titleMap[`${t1}_${t2}`] || titleMap[`${t2}_${t1}`] || ["音楽の冒険家", "ジャンルに縛られず広い好奇心を持つ。"];
 
-        const result = titleMap[`${top1}_${top2}`] || ["ジャンル無用の音楽放浪者", "特定のジャンルに定住せず、常に新しい音を求めてさまよい続ける音楽の冒険家。"];
+        document.getElementById('res-title').innerText = resData[0];
+        document.getElementById('res-desc').innerText = resData[1];
 
-        document.getElementById('res-title').innerText = result[0];
-        document.getElementById('res-desc').innerText = result[1];
-        document.getElementById('result-overlay').style.display = 'flex';
+        // アーティストマッチング
+        const matched = artistMaster.map(art => {
+            let s = 0;
+            if (art.tags.includes(t1)) s += 10;
+            if (art.tags.includes(t2)) s += 5;
+            return { ...art, s };
+        }).filter(a => a.s > 0).sort((a,b) => b.s - a.s).slice(0, 6);
 
-        const shareText = `【MUSIC DNA 分析結果】\n私の属性は《${result[0]}》でした！\n#音楽属性診断 #MUSIC_DNA\n`;
+        document.getElementById('artist-match-list').innerHTML = matched.map(art => 
+            `<div class="artist-chip ${art.s >= 15 ? 'match-perfect' : ''}">${art.name}</div>`
+        ).join('');
+
+        // シェアリンク
+        const shareText = `【MUSIC DNA 分析結果】\n私の音楽DNA属性は《${resData[0]}》でした！\n#MUSIC_DNA #音楽属性診断\n`;
         document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(window.location.href)}`;
         document.getElementById('share-line').href = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}`;
+
+        document.getElementById('result-overlay').style.display = 'flex';
+        window.scrollTo(0,0);
     }
+
+    init();
 </script>
 </body>
 </html>
