@@ -6,75 +6,47 @@
     <title>MUSIC DNA - 究極の音楽属性診断</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-        :root {
-            --bg: #050505;
-            --card-inner: #121212;
-            --accent-l: #6366f1;
-            --accent-r: #ec4899;
-            --text: #ffffff;
-            --text-dim: #a1a1aa;
-        }
-
-        body {
-            font-family: "Inter", "Hiragino Kaku Gothic ProN", sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            overflow-x: hidden;
-            line-height: 1.6;
-        }
-
+        :root { --bg: #050505; --card-inner: #121212; --accent-l: #6366f1; --accent-r: #ec4899; --text: #ffffff; --text-dim: #a1a1aa; }
+        body { font-family: "Inter", "Hiragino Kaku Gothic ProN", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; line-height: 1.6; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-
         header { text-align: center; padding: 60px 0 40px; }
         header h1 { font-size: 2rem; letter-spacing: 6px; font-weight: 900; margin: 0; background: linear-gradient(90deg, var(--accent-l), var(--accent-r)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         header p { font-size: 0.8rem; color: var(--text-dim); margin-top: 15px; letter-spacing: 1px;}
 
-        /* 質問エリア */
+        /* デバッグ用：読み込み状態を表示 */
+        #loading-status { text-align: center; font-size: 0.7rem; color: #4ade80; margin-bottom: 20px; }
+
         .question-wrapper { display: flex; flex-direction: column; gap: 30px; margin-bottom: 60px; }
         .q-container { background: var(--card-inner); border-radius: 24px; padding: 25px; border: 1px solid #27272a; }
         .q-header { font-size: 0.7rem; font-weight: bold; color: var(--text-dim); margin-bottom: 15px; display: block; text-transform: uppercase; letter-spacing: 2px; text-align: center; }
         .choice-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .choice-btn { background: #18181b; border: 2px solid #27272a; color: white; padding: 20px 12px; border-radius: 16px; cursor: pointer; font-size: 0.85rem; font-weight: 600; transition: 0.3s; min-height: 100px; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .choice-btn.left.active { border-color: var(--accent-l); background: rgba(99, 102, 241, 0.1); box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
-        .choice-btn.right.active { border-color: var(--accent-r); background: rgba(236, 72, 153, 0.1); box-shadow: 0 0 20px rgba(236, 72, 153, 0.2); }
+        .choice-btn.active { border-color: var(--accent-l); background: rgba(99, 102, 241, 0.1); }
 
-        /* 分析ボタン */
         .footer-action { text-align: center; padding-bottom: 100px; }
         .analyze-btn { background: white; color: black; border: none; padding: 20px 50px; border-radius: 50px; font-size: 1.1rem; font-weight: 900; cursor: pointer; transition: 0.3s; }
         .analyze-btn:disabled { background: #27272a; color: #52525b; cursor: not-allowed; }
 
-        /* 結果表示オーバーレイ */
         #result-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; overflow-y: auto; padding: 20px 10px; box-sizing: border-box;}
-        
-        /* 画像として保存する範囲 */
-        #capture-area { background: #fff; color: #000; border-radius: 32px; overflow: hidden; width: 100%; max-width: 450px; margin: 0 auto; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        #capture-area { background: #fff; color: #000; border-radius: 32px; overflow: hidden; width: 100%; max-width: 450px; margin: 0 auto; }
         .card-top { background: #000; padding: 40px 20px; text-align: center; color: white; }
         .card-content { padding: 30px 25px; text-align: center; }
         .res-title { font-size: 1.6rem; font-weight: 900; color: #000; margin-bottom: 10px; }
         .res-desc { font-size: 0.9rem; color: #4b5563; line-height: 1.6; margin-bottom: 25px; }
 
-        /* アーティストリスト */
         .artist-tag-box { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; }
         .artist-chip { background: #f3f4f6; padding: 6px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; color: #1f2937; border: 1px solid #e5e7eb; }
         .match-perfect { background: #000; color: #fff; border-color: #000; }
 
-        /* 操作ボタン */
         .action-container { width: 100%; max-width: 450px; margin: 25px auto 40px; display: flex; flex-direction: column; gap: 15px; }
-        .save-btn { background: var(--accent-l); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; cursor: pointer; width: 100%; font-size: 1rem; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
+        .save-btn { background: var(--accent-l); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; cursor: pointer; font-size: 1rem;}
         
         .sns-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .sns-btn { padding: 14px; border-radius: 12px; text-decoration: none; color: white; font-size: 0.75rem; font-weight: 800; text-align: center; transition: 0.2s; }
-        
-        /* ▼ Xボタンの修正箇所 ▼ */
-        .x-btn { background: #18181b; border: 1px solid rgba(255,255,255,0.2); }
-        .x-btn:hover { background: #27272a; border-color: rgba(255,255,255,0.4); }
-        
+        .sns-btn { padding: 14px; border-radius: 12px; text-decoration: none; color: white; font-size: 0.75rem; font-weight: 800; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .x-btn { background: #18181b; border-color: rgba(255,255,255,0.3); }
         .ig-btn { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
         .dc-btn { background: #5865F2; }
         .ln-btn { background: #06C755; }
-
-        .spotify-container { margin-top: 30px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         .retry-text { text-align: center; color: var(--text-dim); font-size: 0.8rem; margin-top: 30px; cursor: pointer; text-decoration: underline; padding-bottom: 30px;}
     </style>
 </head>
@@ -84,10 +56,9 @@
     <header>
         <h1>MUSIC DNA</h1>
         <p>15の直感。あなたの音楽的本能を可視化する。</p>
+        <div id="loading-status">アーティストデータを読み込み中...</div>
     </header>
-
     <div class="question-wrapper" id="q-list"></div>
-
     <div class="footer-action">
         <button id="analyze-btn" class="analyze-btn" disabled onclick="showResult()">分析を開始する</button>
     </div>
@@ -106,30 +77,22 @@
             <div id="artist-match-list" class="artist-tag-box"></div>
         </div>
     </div>
-
     <div class="action-container">
         <button class="save-btn" onclick="saveAsImage()">📸 結果を画像で保存する</button>
-        <p style="color: #a1a1aa; font-size: 0.7rem; text-align: center; margin: 0;">保存した画像をシェアしよう！</p>
         <div class="sns-grid">
             <a id="share-x" href="#" target="_blank" class="sns-btn x-btn">Xでシェア</a>
             <a href="https://www.instagram.com/" target="_blank" class="sns-btn ig-btn">Instagram</a>
             <a href="https://discord.com/" target="_blank" class="sns-btn dc-btn">Discord</a>
             <a id="share-line" href="#" target="_blank" class="sns-btn ln-btn">LINE</a>
         </div>
-
-        <div class="spotify-container">
-            <p style="color: #a1a1aa; font-size: 0.7rem; text-align: center; margin-bottom: 10px;">CREATOR'S PLAYLIST</p>
-            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4X1E2Y3Z5A0Q6B7W8C9D?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
-
         <div class="retry-text" onclick="location.reload()">もう一度診断する</div>
     </div>
 </div>
 
 <script>
-    // ★ スプレッドシートのURL
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRyt_I_8kDlfPnMSxsVSYBcytr3ur76vs7xmF30t01RFQUkAlULzF8P1oLlsFdLcyMZrQCMj3PAANV/pub?output=csv';
     
+    // ... (questions, titleMapは変更なしのため省略して実装しますが、動作には必要です)
     const questions = [
         { a: "爆音のロックで解放されたい", b: "一緒に沈んでくれる曲に救われたい", catA: "energy", catB: "deep" },
         { a: "ライブで盛り上がるナンバー", b: "お洒落で洗練されたチルな時間", catA: "energy", catB: "aesthetic" },
@@ -172,12 +135,21 @@
         try {
             const res = await fetch(SHEET_URL);
             const csvText = await res.text();
-            const rows = csvText.split('\n').slice(1);
+            // 改行コードの差異を吸収して分割
+            const rows = csvText.split(/\r?\n/).slice(1);
             artistMaster = rows.map(row => {
                 const cols = row.split(',');
-                return { name: cols[0]?.trim(), tags: cols[1]?.toLowerCase().split('.').map(t=>t.trim()) || [] };
-            }).filter(a => a.name);
-        } catch(e) { console.error(e); }
+                if (cols.length < 2) return null;
+                // タグのパース（カンマやドット、前後の空白を考慮）
+                const tags = cols[1].toLowerCase().replace(/\./g, ',').split(',').map(t => t.trim());
+                return { name: cols[0].trim().replace(/^"|"$/g, ''), tags: tags };
+            }).filter(a => a && a.name);
+
+            document.getElementById('loading-status').innerText = `✅ ${artistMaster.length}名のアーティストを同期済み`;
+        } catch(e) {
+            document.getElementById('loading-status').innerText = `❌ データの読み込みに失敗しました`;
+            console.error(e);
+        }
         render();
     }
 
@@ -187,8 +159,8 @@
             const d = document.createElement('div');
             d.className = 'q-container';
             d.innerHTML = `<span class="q-header">Phase ${i+1}</span><div class="choice-group">
-                <button class="choice-btn left" onclick="sel(${i},'A',this)">${q.a}</button>
-                <button class="choice-btn right" onclick="sel(${i},'B',this)">${q.b}</button>
+                <button class="choice-btn" onclick="sel(${i},'A',this)">${q.a}</button>
+                <button class="choice-btn" onclick="sel(${i},'B',this)">${q.b}</button>
             </div>`;
             list.appendChild(d);
         });
@@ -211,19 +183,24 @@
         document.getElementById('res-title').innerText = res[0];
         document.getElementById('res-desc').innerText = res[1];
 
+        // アーティストマッチング
         const matched = artistMaster.map(a => {
             let pts = 0;
             if(a.tags.includes(t1)) pts += 10;
             if(a.tags.includes(t2)) pts += 5;
             return {...a, pts};
-        }).filter(a=>a.pts>0).sort((a,b)=>b.pts-a.pts).slice(0,6);
+        }).filter(a => a.pts >= 10).sort((a,b)=>b.pts-a.pts).slice(0, 8);
 
-        document.getElementById('artist-match-list').innerHTML = matched.map(a=>
-            `<div class="artist-chip ${a.pts>=15?'match-perfect':''}">${a.name}</div>`
-        ).join('');
+        const listContainer = document.getElementById('artist-match-list');
+        if (matched.length === 0) {
+            listContainer.innerHTML = '<p style="font-size:0.7rem; color:#999;">あなたの感性は唯一無二のようです。</p>';
+        } else {
+            listContainer.innerHTML = matched.map(a=>
+                `<div class="artist-chip ${a.pts>=15?'match-perfect':''}">${a.name}</div>`
+            ).join('');
+        }
 
-        // シェアリンク
-        const txt = encodeURIComponent(`私の音楽DNAは《${res[0]}》でした！\n#MUSIC_DNA #音楽属性診断\n`);
+        const txt = encodeURIComponent(`私の音楽DNAは《${res[0]}》でした！\n#MUSIC_DNA\n`);
         const url = encodeURIComponent(window.location.href);
         document.getElementById('share-x').href = `https://twitter.com/intent/tweet?text=${txt}&url=${url}`;
         document.getElementById('share-line').href = `https://social-plugins.line.me/lineit/share?url=${url}`;
@@ -234,18 +211,14 @@
 
     async function saveAsImage() {
         const area = document.getElementById('capture-area');
-        // 画像生成時の倍率を上げて高画質に
-        const canvas = await html2canvas(area, { backgroundColor: null, scale: 3 });
+        const canvas = await html2canvas(area, { backgroundColor: '#000', scale: 2 });
         const link = document.createElement('a');
-        link.download = 'MUSIC_DNA_RESULT.png';
+        link.download = 'MUSIC_DNA.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     }
 
     init();
-</script>
-</body>
-</html>
 </script>
 </body>
 </html>
