@@ -126,7 +126,6 @@
             artistMaster = rows.map(row => {
                 const cols = row.split(',');
                 if (cols.length < 2) return null;
-                // 全角カンマやドット、大文字小文字、空白をすべて正規化
                 const tags = cols[1].toLowerCase().replace(/[．。、]/g, ',').split(/[,.]/).map(t => t.trim());
                 return { name: cols[0].trim().replace(/^"|"$/g, ''), tags: tags };
             }).filter(a => a && a.name);
@@ -157,6 +156,15 @@
         if(!answers.includes(null)) document.getElementById('analyze-btn').disabled = false;
     }
 
+    // シャッフル関数
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
     function showResult() {
         let s = {energy:0, deep:0, aesthetic:0, skill:0, dig:0};
         answers.forEach((ans, i) => s[ans==='A'?questions[i].catA:questions[i].catB]++);
@@ -167,22 +175,37 @@
         document.getElementById('res-title').innerText = res[0];
         document.getElementById('res-desc').innerText = res[1];
 
-        // マッチング判定（閾値を下げてより出やすく修正）
-        const matched = artistMaster.map(a => {
+        // マッチングロジックの改善
+        let score15 = []; // 2つとも一致
+        let score10 = []; // 1位属性が一致
+        let score5 = [];  // 2位属性が一致
+
+        artistMaster.forEach(a => {
             let pts = 0;
             if(a.tags.some(tag => tag.includes(t1))) pts += 10;
             if(a.tags.some(tag => tag.includes(t2))) pts += 5;
-            return {...a, pts};
-        }).filter(a => a.pts >= 5) // 2位の属性が一致するだけでも表示
-          .sort((a,b)=>b.pts-a.pts).slice(0, 10);
+
+            if(pts === 15) score15.push(a);
+            else if(pts === 10) score10.push(a);
+            else if(pts === 5) score5.push(a);
+        });
+
+        // 各グループ内をランダムにシャッフルし、優先順位に従って結合
+        const finalMatched = [
+            ...shuffleArray(score15),
+            ...shuffleArray(score10),
+            ...shuffleArray(score5)
+        ].slice(0, 5); // 最大5件に制限
 
         const listContainer = document.getElementById('artist-match-list');
-        if (matched.length === 0) {
+        if (finalMatched.length === 0) {
             listContainer.innerHTML = '<p style="font-size:0.7rem; color:#999;">あなたの感性は唯一無二のようです。</p>';
         } else {
-            listContainer.innerHTML = matched.map(a=>
-                `<div class="artist-chip ${a.pts>=10?'match-perfect':''}">${a.name}</div>`
-            ).join('');
+            listContainer.innerHTML = finalMatched.map(a=> {
+                // スコア計算を再実行してスタイルを決める
+                let isPerfect = a.tags.some(t => t.includes(t1)) && a.tags.some(t => t.includes(t2));
+                return `<div class="artist-chip ${isPerfect ? 'match-perfect' : ''}">${a.name}</div>`;
+            }).join('');
         }
 
         document.getElementById('result-overlay').style.display = 'block';
