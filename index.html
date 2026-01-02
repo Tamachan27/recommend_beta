@@ -33,10 +33,12 @@
         .res-desc { font-size: 0.85rem; color: #4b5563; margin-bottom: 30px; line-height: 1.6; }
 
         .match-section-title { font-size: 0.7rem; font-weight: 800; color: #9ca3af; letter-spacing: 1px; margin-bottom: 8px; }
-        .best-artist-display { margin-bottom: 25px; }
-        .best-name { font-size: 1.6rem; font-weight: 900; color: #000; border-bottom: 4px solid #000; display: inline-block; padding: 0 10px; margin-bottom: 10px;}
-        .yt-link { font-size: 0.75rem; text-decoration: none; color: #ff0000; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .best-artist-display { margin-bottom: 25px; padding: 20px; background: #f9fafb; border-radius: 20px; }
+        .best-name { font-size: 1.6rem; font-weight: 900; color: #000; margin-bottom: 8px; display: block; }
+        .artist-tags-container { display: flex; justify-content: center; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
+        .artist-tag-badge { font-size: 0.55rem; font-weight: 900; padding: 2px 8px; border-radius: 4px; background: #000; color: #fff; text-transform: uppercase; }
         
+        .yt-link { font-size: 0.75rem; text-decoration: none; color: #ff0000; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .other-artists-box { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; border-top: 1px solid #eee; padding-top: 20px; margin-top: 10px; }
         .artist-chip { background: #f3f4f6; padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color: #1f2937; border: 1px solid #e5e7eb; }
 
@@ -69,13 +71,14 @@
             <p id="res-desc" class="res-desc">-</p>
             
             <div class="best-artist-display">
-                <div class="match-section-title">一番合うアーティストはこちら！</div>
+                <div class="match-section-title">一番合うアーティスト！</div>
+                <div id="best-match-tags" class="artist-tags-container"></div>
                 <div id="best-match-name" class="best-name">-</div>
-                <a id="yt-search-btn" href="#" target="_blank" class="yt-link">▶ YouTubeでこの人を聴く</a>
+                <a id="yt-search-btn" href="#" target="_blank" class="yt-link">▶ YouTubeで聴く</a>
             </div>
 
             <div class="other-section">
-                <div class="match-section-title">他はこれがおすすめ！</div>
+                <div class="match-section-title">他のおすすめ</div>
                 <div id="other-match-list" class="other-artists-box"></div>
             </div>
         </div>
@@ -89,7 +92,6 @@
 <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRyt_I_8kDlfPnMSxsVSYBcytr3ur76vs7xmF30t01RFQUkAlULzF8P1oLlsFdLcyMZrQCMj3PAANV/pub?output=csv';
     
-    // 15問の質問構成
     const questions = [
         { id:0, a: "強い音で一気に気持ちを解放したい", b: "感情に寄り添ってくれる曲に身を預けたい", catA: "energy", catB: "deep" },
         { id:1, a: "場の熱量ごと音楽を浴びたい", b: "音の美しさに静かに浸りたい", catA: "energy", catB: "aesthetic" },
@@ -97,15 +99,15 @@
         { id:3, a: "構成や展開の巧さにゾクッとする", b: "考え込まず、その瞬間の勢いで楽しみたい", catA: "skill", catB: "energy" },
         { id:4, a: "一つ一つの音や演奏を細かく聴きたい", b: "全体の雰囲気が心地よければそれでいい", catA: "skill", catB: "aesthetic" },
         { id:5, a: "最初の数秒で完成度を感じたい", b: "聴き終わった後の余韻を大事にしたい", catA: "skill", catB: "aesthetic" },
-        { id:6, a: "感情がむき出しの歌に共感したい", b: "自由な発想やサウンドを取り入れた曲を聴きたい", catA: "deep", catB: "dig" }, // BがInternet
+        { id:6, a: "感情がむき出しの歌に共感したい", b: "自由な発想やサウンドを取り入れた曲を聴きたい", catA: "deep", catB: "dig" },
         { id:7, a: "自分の感覚に刺さる音楽を見つけたい", b: "洗練されたセンスを感じる音に惹かれる", catA: "dig", catB: "aesthetic" },
         { id:8, a: "新しい刺激や未知のジャンルを探したい", b: "演奏やプレイの凄さを味わいたい", catA: "dig", catB: "skill" },
         { id:9, a: "深夜に一人で静かに浸る音楽", b: "昼間に背中を押してくれる音楽", catA: "deep", catB: "energy" },
-        { id:10, a: "小さいライブハウスで楽しむ音楽が好き", b: "大きな一体感を生む音楽が好き", catA: "dig", catB: "energy" }, // AがInternet
+        { id:10, a: "小さいライブハウスで楽しむ音楽が好き", b: "大きな一体感を生む音楽が好き", catA: "dig", catB: "energy" },
         { id:11, a: "一貫した美意識や世界観を感じたい", b: "予測できない展開や変な音に惹かれる", catA: "aesthetic", catB: "dig" },
         { id:12, a: "一気に元気をチャージしたい", b: "静かで心地よい時間を過ごしたい", catA: "energy", catB: "aesthetic" },
         { id:13, a: "感情を直接揺さぶられる瞬間が大事", b: "曲の構成や完成度に感動したい", catA: "deep", catB: "skill" },
-        { id:14, a: "まだ知られていない感じがたまらない", b: "みんなで共有できる熱さがたまらない", catA: "dig", catB: "energy" }  // AがInternet
+        { id:14, a: "まだ知られていない感じがたまらない", b: "みんなで共有できる熱さがたまらない", catA: "dig", catB: "energy" }
     ];
 
     const titleMap = {
@@ -152,9 +154,7 @@
 
     function render() {
         const list = document.getElementById('q-list');
-        // 質問の順番をシャッフル
         const shuffledQuestions = shuffle([...questions]);
-        
         shuffledQuestions.forEach((q, i) => {
             const d = document.createElement('div');
             d.className = 'q-container';
@@ -166,10 +166,10 @@
         });
     }
 
-    function sel(originalId, type, btn) {
-        answers[originalId] = type;
-        Array.from(btn.parentElement.children).forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
+    function sel(id, t, b) {
+        answers[id] = t;
+        Array.from(b.parentElement.children).forEach(btn=>btn.classList.remove('active'));
+        b.classList.add('active');
         if(!answers.includes(null)) document.getElementById('analyze-btn').disabled = false;
     }
 
@@ -177,29 +177,30 @@
         let scores = {energy:0, deep:0, aesthetic:0, skill:0, dig:0};
         answers.forEach((ans, i) => scores[ans==='A' ? questions[i].catA : questions[i].catB]++);
         
-        // インターネット判定ロジック（Q7-B, Q11-A, Q15-Aのうち2つ以上）
+        // --- 判定ロジック ---
         let netCount = 0;
         if(answers[6] === 'B') netCount++;
         if(answers[10] === 'A') netCount++;
         if(answers[14] === 'A') netCount++;
-        const isInternetUser = netCount >= 2;
+        const isNet = netCount >= 2;
+        const isLoud = (answers[0] === 'A' && answers[6] === 'A');
+        const isIdol = (answers[1] === 'A' && answers[11] === 'A');
 
         const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
         const t1 = sorted[0][0], t2 = sorted[1][0];
         
         document.getElementById('res-type').innerText = `${t1.toUpperCase()}型 / ${t2.toUpperCase()}型`;
-        
-        const res = titleMap[`${t1}_${t2}`] || titleMap[`${t2}_${t1}`] || ["音楽の冒険家", "常に新しい音との出会いを楽しむリスナー。"];
+        const res = titleMap[`${t1}_${t2}`] || titleMap[`${t2}_${t1}`] || ["音楽の冒険家", "新しい音との出会いを楽しむ。"];
         document.getElementById('res-title').innerText = res[0];
         document.getElementById('res-desc').innerText = res[1];
 
-        // アーティストマッチング
         let list = artistMaster.map(a => {
             let pts = 0;
             if(a.tags.includes(t1)) pts += 10;
             if(a.tags.includes(t2)) pts += 5;
-            // インターネット優先フラグ適用
-            if(isInternetUser && a.tags.includes('internet')) pts += 20; 
+            if(isNet && a.tags.includes('internet')) pts += 20;
+            if(isLoud && a.tags.includes('loud')) pts += 15;
+            if(isIdol && a.tags.includes('idol')) pts += 15;
             return { ...a, score: pts };
         });
 
@@ -207,7 +208,11 @@
         const best = list[0];
         const others = list.slice(1, 6);
 
+        // ベストアーティスト表示（タグバッジ付き）
         document.getElementById('best-match-name').innerText = best.name;
+        const displayTags = best.tags.filter(t => ['idol','loud','internet','skill','energy','deep','aesthetic','dig'].includes(t));
+        document.getElementById('best-match-tags').innerHTML = displayTags.map(t => `<span class="artist-tag-badge">${t}</span>`).join('');
+        
         document.getElementById('yt-search-btn').href = `https://www.youtube.com/results?search_query=${encodeURIComponent(best.name)}`;
         document.getElementById('other-match-list').innerHTML = others.map(a => `<div class="artist-chip">${a.name}</div>`).join('');
 
@@ -223,6 +228,11 @@
         link.href = canvas.toDataURL('image/png');
         link.click();
     }
+
+    init();
+</script>
+</body>
+</html>
 
     init();
 </script>
