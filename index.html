@@ -11,39 +11,39 @@
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         header { text-align: center; padding: 60px 0 40px; }
         header h1 { font-size: 2rem; letter-spacing: 6px; font-weight: 900; margin: 0; background: linear-gradient(90deg, var(--accent-l), var(--accent-r)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        #loading-status { text-align: center; font-size: 0.7rem; color: #4ade80; margin-top: 10px; height: 1em; }
+        .sub-guide { font-size: 0.8rem; color: var(--text-dim); margin-top: 10px; font-weight: 500; }
+        #loading-status { text-align: center; font-size: 0.6rem; color: #4ade80; margin-top: 10px; height: 1em; }
 
         .question-wrapper { display: flex; flex-direction: column; gap: 20px; margin-bottom: 60px; }
         .q-container { background: var(--card-inner); border-radius: 20px; padding: 25px; border: 1px solid #27272a; }
         .q-header { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 15px; display: block; text-align: center; letter-spacing: 2px; }
         .choice-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .choice-btn { background: #18181b; border: 2px solid #27272a; color: white; padding: 15px 10px; border-radius: 12px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; min-height: 80px; }
+        .choice-btn { background: #18181b; border: 2px solid #27272a; color: white; padding: 15px 10px; border-radius: 12px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; min-height: 80px; display: flex; align-items: center; justify-content: center; line-height: 1.4; }
         .choice-btn.active { border-color: var(--accent-l); background: rgba(99, 102, 241, 0.1); }
 
         .analyze-btn { width: 100%; max-width: 300px; background: white; color: black; border: none; padding: 20px; border-radius: 50px; font-size: 1rem; font-weight: 900; cursor: pointer; display: block; margin: 0 auto 100px; }
         .analyze-btn:disabled { background: #27272a; color: #52525b; }
 
         #result-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; overflow-y: auto; padding: 20px 10px; box-sizing: border-box;}
-        #capture-area { background: #fff; color: #000; border-radius: 32px; overflow: hidden; width: 100%; max-width: 400px; margin: 0 auto; }
+        #capture-area { background: #fff; color: #000; border-radius: 32px; overflow: hidden; width: 100%; max-width: 400px; margin: 0 auto; position: relative;}
         .card-top { background: #000; padding: 30px 20px; text-align: center; color: white; }
         .card-content { padding: 30px 25px; text-align: center; }
+        .res-type-badge { display: inline-block; font-size: 0.65rem; font-weight: 800; padding: 4px 12px; border: 1px solid #000; border-radius: 4px; margin-bottom: 10px; text-transform: uppercase; }
         .res-title { font-size: 1.4rem; font-weight: 900; color: #000; margin-bottom: 10px; line-height: 1.2; }
-        .res-desc { font-size: 0.85rem; color: #4b5563; margin-bottom: 30px; }
+        .res-desc { font-size: 0.85rem; color: #4b5563; margin-bottom: 30px; line-height: 1.6; }
 
-        /* マッチング表示エリアの調整 */
         .match-section-title { font-size: 0.7rem; font-weight: 800; color: #9ca3af; letter-spacing: 1px; margin-bottom: 8px; }
         .best-artist-display { margin-bottom: 25px; }
-        .best-name { font-size: 1.6rem; font-weight: 900; color: #000; display: inline-block; padding: 5px 20px; border-bottom: 4px solid #000; }
+        .best-name-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .best-name { font-size: 1.6rem; font-weight: 900; color: #000; border-bottom: 4px solid #000; padding: 0 10px; }
+        .yt-link { font-size: 0.7rem; text-decoration: none; color: #ff0000; font-weight: 800; display: flex; align-items: center; gap: 4px; }
         
         .other-artists-box { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; border-top: 1px solid #eee; padding-top: 20px; margin-top: 10px; }
         .artist-chip { background: #f3f4f6; padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color: #1f2937; border: 1px solid #e5e7eb; }
 
         .action-container { width: 100%; max-width: 400px; margin: 20px auto; display: flex; flex-direction: column; gap: 12px; }
         .save-btn { background: var(--accent-l); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; cursor: pointer; }
-        .sns-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .sns-btn { padding: 12px; border-radius: 12px; text-decoration: none; color: white; font-size: 0.7rem; font-weight: 800; text-align: center; border: 1px solid rgba(255,255,255,0.2); }
-        .x-btn { background: #111; }
-        .ig-btn { background: linear-gradient(45deg, #f09433, #bc1888); }
+        .sns-btn { padding: 12px; border-radius: 12px; text-decoration: none; color: white; font-size: 0.7rem; font-weight: 800; text-align: center; background: #111; border: 1px solid rgba(255,255,255,0.2); }
         .retry-text { text-align: center; color: var(--text-dim); font-size: 0.7rem; margin-top: 20px; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
@@ -52,6 +52,7 @@
 <div class="container">
     <header>
         <h1>MUSIC DNA</h1>
+        <p class="sub-guide">深く考えず、直感で選んでください</p>
         <div id="loading-status">Loading Data...</div>
     </header>
     <div class="question-wrapper" id="q-list"></div>
@@ -65,12 +66,16 @@
             <div style="font-size: 1rem; font-weight: 900; margin-top: 5px;">CERTIFIED LISTENER</div>
         </div>
         <div class="card-content">
+            <div id="res-type" class="res-type-badge">-</div>
             <div id="res-title" class="res-title">-</div>
             <p id="res-desc" class="res-desc">-</p>
             
             <div class="best-artist-display">
                 <div class="match-section-title">一番合うアーティストはこちら！</div>
-                <div id="best-match-name" class="best-name">Searching...</div>
+                <div class="best-name-wrapper">
+                    <div id="best-match-name" class="best-name">-</div>
+                    <a id="yt-search-btn" href="#" target="_blank" class="yt-link">▶ YouTubeで聴く</a>
+                </div>
             </div>
 
             <div class="other-section">
@@ -81,10 +86,7 @@
     </div>
     <div class="action-container">
         <button class="save-btn" onclick="saveAsImage()">📸 結果を画像で保存する</button>
-        <div class="sns-grid">
-            <a id="share-x" href="#" target="_blank" class="sns-btn x-btn">Xでシェア</a>
-            <a href="https://www.instagram.com/" target="_blank" class="sns-btn ig-btn">Instagram</a>
-        </div>
+        <a id="share-x" href="#" target="_blank" class="sns-btn">結果をXでシェア</a>
         <div class="retry-text" onclick="location.reload()">もう一度診断する</div>
     </div>
 </div>
@@ -92,23 +94,23 @@
 <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRyt_I_8kDlfPnMSxsVSYBcytr3ur76vs7xmF30t01RFQUkAlULzF8P1oLlsFdLcyMZrQCMj3PAANV/pub?output=csv';
     
-    // （questions, titleMap は前回と同じです）
+    // 改訂版：15問の質問構成
     const questions = [
         { a: "爆音のロックで解放されたい", b: "一緒に沈んでくれる曲に救われたい", catA: "energy", catB: "deep" },
-        { a: "ライブで盛り上がるナンバー", b: "お洒落で洗練されたチルな時間", catA: "energy", catB: "aesthetic" },
-        { a: "歌詞を噛み締め深く考察したい", b: "空間を彩る響きに酔いしれたい", catA: "deep", catB: "aesthetic" },
-        { a: "複雑な構成に脳がゾクゾクする", b: "直感的なパワーに体が動く", catA: "skill", catB: "energy" },
+        { a: "ライブで全力で盛り上がりたい", b: "お洒落で洗練された曲に浸りたい", catA: "energy", catB: "aesthetic" },
+        { a: "歌詞を噛み締め深く考察したい", b: "理屈抜きに音の響きに酔いたい", catA: "deep", catB: "aesthetic" },
+        { a: "複雑な構成に脳がゾクゾクする", b: "直感的な曲に勝手に体が動く", catA: "skill", catB: "energy" },
         { a: "楽器単体の凄さを聴き込みたい", b: "ボーカルや全体の雰囲気が大事", catA: "skill", catB: "aesthetic" },
-        { a: "完璧なイントロから始まりたい", b: "物語の余韻に深く浸りたい", catA: "skill", catB: "deep" },
-        { a: "正体不明な才能を見つけたい", b: "圧倒的な熱量を放つスターが好き", catA: "dig", catB: "energy" },
-        { a: "無名のインディーズを掘りたい", b: "洗練された最新トレンドを浴びたい", catA: "dig", catB: "aesthetic" },
-        { a: "常に新しい刺激を掘り続けたい", b: "職人芸のような演奏を堪能したい", catA: "dig", catB: "skill" },
-        { a: "雨の日や深夜に一人で浸る音楽", b: "晴天のドライブに背中を押す音楽", catA: "deep", catB: "energy" },
-        { a: "楽器のテクニックに惹かれる", b: "孤独や葛藤が伝わる生々しい歌", catA: "skill", catB: "deep" },
-        { a: "トータルな美学がある人が好き", b: "音楽そのものの異質さが好き", catA: "aesthetic", catB: "dig" },
+        { a: "「これだ！」と思わせるイントロが命", b: "曲全体の空気感や余韻が大事", catA: "skill", catB: "aesthetic" },
+        { a: "恋愛の曲や生々しい感情に共感したい", b: "ネット発の独自の文化や音を楽しみたい", catA: "deep", catB: "dig" },
+        { a: "無名のインディーズを掘り起こしたい", b: "洗練された最新トレンドを浴びたい", catA: "dig", catB: "aesthetic" },
+        { a: "常に新しい刺激や新ジャンルを掘りたい", b: "各楽器のプレイが際立つ曲が好き", catA: "dig", catB: "skill" },
+        { a: "深夜に一人で深く浸る音楽", b: "晴天のドライブに背中を押す音楽", catA: "deep", catB: "energy" },
+        { a: "SNSや動画から現れるネット発が好き", b: "テレビやフェスで輝くスターが好き", catA: "dig", catB: "energy" }, // Q11
+        { a: "コンセプチュアルな「美学」が好き", b: "予測不能で「変な音」が鳴る音楽が好き", catA: "aesthetic", catB: "dig" },
         { a: "爆発的な元気をチャージしたい", b: "優雅で心地よい安らぎがほしい", catA: "energy", catB: "aesthetic" },
         { a: "心を揺さぶるのは「魂の叫び」", b: "心を揺さぶるのは「音の構築美」", catA: "deep", catB: "skill" },
-        { a: "「自分だけが知る」特別感が大事", b: "「みんなで熱くなる」一体感が大事", catA: "dig", catB: "energy" }
+        { a: "自分だけが知る特別感が大事", b: "みんなで熱くなる一体感が大事", catA: "dig", catB: "energy" }
     ];
 
     const titleMap = {
@@ -180,52 +182,48 @@
     function showResult() {
         let s = {energy:0, deep:0, aesthetic:0, skill:0, dig:0};
         answers.forEach((ans, i) => s[ans==='A'?questions[i].catA:questions[i].catB]++);
+        
+        // Q11(index 10)でAを選んだかチェック
+        const prefersInternet = (answers[10] === 'A');
+
         const sorted = Object.entries(s).sort((a,b)=>b[1]-a[1]);
         const t1 = sorted[0][0], t2 = sorted[1][0];
+        
+        // 表示用タイプ
+        document.getElementById('res-type').innerText = `${t1}型 / ${t2}型`;
+        
         const res = titleMap[`${t1}_${t2}`] || titleMap[`${t2}_${t1}`] || ["音楽の冒険家", "未知の音を求める者。"];
-
         document.getElementById('res-title').innerText = res[0];
         document.getElementById('res-desc').innerText = res[1];
 
-        // 候補の分類
-        let score15 = []; let score10 = []; let score5 = [];
-
-        artistMaster.forEach(a => {
+        // マッチング計算（スコア制）
+        let scoredArtists = artistMaster.map(a => {
             let pts = 0;
             if(a.tags.some(tag => tag.includes(t1))) pts += 10;
             if(a.tags.some(tag => tag.includes(t2))) pts += 5;
-            if(pts === 15) score15.push(a);
-            else if(pts === 10) score10.push(a);
-            else if(pts === 5) score5.push(a);
+            // インターネット優先ロジック: ネット発を選び、かつタグにinternetがある場合
+            if(prefersInternet && a.tags.some(tag => tag.includes('internet'))) {
+                // すでに属性が1つでも合致していれば、大幅加点して優先
+                if(pts > 0) pts += 20; 
+            }
+            return { ...a, score: pts };
         });
 
-        // シャッフルして優先順位順に結合
-        const pool = [
-            ...shuffleArray(score15),
-            ...shuffleArray(score10),
-            ...shuffleArray(score5)
-        ];
+        // スコア順（同点はシャッフル）にソート
+        scoredArtists = shuffleArray(scoredArtists).sort((a,b) => b.score - a.score);
 
-        // 1番目を「最高の相性」として抽出
-        const bestOne = pool.length > 0 ? pool[0] : null;
-        // 2番目以降の最大4件を「おすすめ」として抽出
-        const others = pool.slice(1, 5);
+        const bestOne = scoredArtists[0];
+        const others = scoredArtists.slice(1, 5);
 
-        // 表示：一番合うアーティスト
-        const bestLabel = document.getElementById('best-match-name');
+        // 1位の表示
         if (bestOne) {
-            bestLabel.innerText = bestOne.name;
-        } else {
-            bestLabel.innerText = "唯一無二の感性";
+            document.getElementById('best-match-name').innerText = bestOne.name;
+            document.getElementById('yt-search-btn').href = `https://www.youtube.com/results?search_query=${encodeURIComponent(bestOne.name)}`;
         }
 
-        // 表示：他のおすすめ
+        // 他の表示
         const listContainer = document.getElementById('other-match-list');
-        if (others.length === 0) {
-            listContainer.innerHTML = '<p style="font-size:0.7rem; color:#999;">他に見つかりませんでした</p>';
-        } else {
-            listContainer.innerHTML = others.map(a => `<div class="artist-chip">${a.name}</div>`).join('');
-        }
+        listContainer.innerHTML = others.map(a => `<div class="artist-chip">${a.name}</div>`).join('');
 
         document.getElementById('result-overlay').style.display = 'block';
         window.scrollTo(0,0);
