@@ -98,13 +98,13 @@
     // ※スプレッドシートのURLをあなたのものに差し替えてください
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRyt_I_8kDlfPnMSxsVSYBcytr3ur76vs7xmF30t01RFQUkAlULzF8P1oLlsFdLcyMZrQCMj3PAANV/pub?output=csv';
     
-    // マトリックス項目定義
-    const tags = ["energy", "deep", "aesthetic", "skill", "dig", "idol", "loud"];
+    // 全8属性
+    const tags = ["energy", "deep", "aesthetic", "skill", "dig", "idol", "loud", "internet"];
     
     const tagDisplay = {
-        energy: "#エネルギー", deep: "#エモい #重低音", aesthetic: "#世界観 #洗練",
-        skill: "#精巧な旋律 #テクニカル", dig: "#インディーズ #未発掘",
-        idol: "#アイドル魂 #推し活", loud: "#爆音中毒 #ラウド"
+        energy: "#熱狂", deep: "#深い没入", aesthetic: "#洗練された世界観",
+        skill: "#精巧な技巧", dig: "#未踏の発見",
+        idol: "#アイドル魂", loud: "#爆音中毒", internet: "#ネットシーン発"
     };
 
     const questions = [
@@ -114,24 +114,25 @@
         { id:3, a: "構成や展開の巧さにゾクッとする", b: "考え込まず、その瞬間の勢いで楽しみたい", tagsA: ["skill"], tagsB: ["energy"] },
         { id:4, a: "一つ一つの音や演奏を細かく聴きたい", b: "全体の雰囲気が心地よければそれでいい", tagsA: ["skill"], tagsB: ["aesthetic"] },
         { id:5, a: "最初の数秒で完成度を感じたい", b: "聴き終わった後の余韻を大事にしたい", tagsA: ["skill"], tagsB: ["aesthetic"] },
-        { id:6, a: "感情がむき出しの歌に共感したい", b: "自由な発想やサウンドを取り入れた曲を聴きたい", tagsA: ["deep"], tagsB: ["dig"] },
+        { id:6, a: "感情がむき出しの歌に共感したい", b: "自由な発想やサウンドを取り入れた曲を聴きたい", tagsA: ["deep"], tagsB: ["dig", "internet"] },
         { id:7, a: "自分の感覚に刺さる音楽を見つけたい", b: "洗練されたセンスを感じる音に惹かれる", tagsA: ["dig"], tagsB: ["aesthetic"] },
         { id:8, a: "新しい刺激や未知のジャンルを探したい", b: "演奏やプレイの凄さを味わいたい", tagsA: ["dig"], tagsB: ["skill"] },
         { id:9, a: "深夜に一人で静かに浸る音楽", b: "昼間に背中を押してくれる音楽", tagsA: ["deep"], tagsB: ["energy", "idol"] },
-        { id:10, a: "小さいライブハウスで楽しむ音楽が好き", b: "大きな一体感を生む音楽が好き", tagsA: ["dig"], tagsB: ["energy", "idol"] },
-        { id:11, a: "一貫した美意識や世界観を感じたい", b: "予測できない展開や変な音に惹かれる", tagsA: ["aesthetic", "idol"], tagsB: ["dig"] },
+        { id:10, a: "小さいライブハウスで楽しむ音楽が好き", b: "大きな一体感を生む音楽が好き", tagsA: ["dig", "internet"], tagsB: ["energy", "idol"] },
+        { id:11, a: "一貫した美意識や世界観を感じたい", b: "予測できない展開や変な音に惹かれる", tagsA: ["aesthetic", "idol"], tagsB: ["dig", "internet"] },
         { id:12, a: "一気に元気をチャージしたい", b: "静かで心地よい時間を過ごしたい", tagsA: ["energy"], tagsB: ["aesthetic"] },
-        { id:13, a: "感情を直接揺さぶられる瞬間が大事", b: "曲の構成や完成度に感動したい", tagsA: ["deep"], tagsB: ["skill"] },
-        { id:14, a: "まだ知られていない感じがたまらない", b: "みんなで共有できる熱さがたまらない", tagsA: ["dig"], tagsB: ["energy", "idol"] }
+        { id:13, a: "感情を直接揺さぶられる瞬間が大事", b: "曲の構成や完成度に感動したい", tagsA: ["deep", "internet"], tagsB: ["skill"] },
+        { id:14, a: "まだ知られていない感じがたまらない", b: "みんなで共有できる熱さがたまらない", tagsA: ["dig", "internet"], tagsB: ["energy", "idol"] }
     ];
 
     const titleMap = {
-        energy_dig: "最前線を焼く爆音ハンター", energy_aesthetic: "光り輝くステージの目撃者",
-        energy_skill: "精密に狂う情熱のメカニズム", energy_deep: "魂を震わせる情熱の代弁者",
-        dig_aesthetic: "トレンドの境界を歩く審美家", dig_skill: "未踏の譜面を解く音の解析官",
-        dig_deep: "ネットの海底を漂う感情の観測者", aesthetic_skill: "完璧な余白を創る音響設計士",
-        aesthetic_deep: "月夜に沈む美学の詩人", skill_deep: "深淵を設計する音響哲学者",
-        energy_idol: "熱狂を創る応援のプロ", loud_energy: "鼓膜を揺らす衝動の塊"
+        energy_dig: "新時代の熱狂ハンター", energy_aesthetic: "輝くステージの目撃者",
+        energy_skill: "精密に狂う情熱の機構", energy_deep: "魂を震わせる情熱の代弁者",
+        dig_aesthetic: "境界を歩く審美家", dig_skill: "未踏の音を解く解析官",
+        dig_deep: "海底を漂う感情の観測者", aesthetic_skill: "完璧な余白の設計士",
+        aesthetic_deep: "月夜に沈む美学の詩人", skill_deep: "深淵の音響哲学者",
+        energy_idol: "熱狂を創る応援のプロ", loud_energy: "鼓膜を揺らす衝動の塊",
+        internet_dig: "ネットの深淵を歩く探求者", internet_deep: "デジタルに沈む叙情家"
     };
 
     let artistMaster = [];
@@ -145,17 +146,19 @@
             artistMaster = rows.map(row => {
                 const cols = row.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
                 if (cols.length < 2) return null;
+                // A:名前 B:E C:De D:A E:S F:Di G:Id H:Lo I:In
                 return {
                     name: cols[0],
                     matrix: {
                         energy: cols[1]==='◎', deep: cols[2]==='◎', aesthetic: cols[3]==='◎',
-                        skill: cols[4]==='◎', dig: cols[5]==='◎', idol: cols[6]==='◎', loud: cols[7]==='◎'
+                        skill: cols[4]==='◎', dig: cols[5]==='◎', idol: cols[6]==='◎', 
+                        loud: cols[7]==='◎', internet: cols[8]==='◎'
                     }
                 };
             }).filter(a => a && a.name);
             document.getElementById('loading-status').innerText = `✅ ${artistMaster.length} Artists Synced`;
         } catch(e) {
-            document.getElementById('loading-status').innerText = `❌ Data Sync Error`;
+            document.getElementById('loading-status').innerText = `❌ Sync Error`;
         }
         renderQuestions();
     }
@@ -182,7 +185,7 @@
     }
 
     function showResult() {
-        const userScores = { energy:0, deep:0, aesthetic:0, skill:0, dig:0, idol:0, loud:0 };
+        const userScores = { energy:0, deep:0, aesthetic:0, skill:0, dig:0, idol:0, loud:0, internet:0 };
         answers.forEach((ans, i) => {
             const targetTags = ans === 'A' ? questions[i].tagsA : questions[i].tagsB;
             targetTags.forEach(t => userScores[t]++);
@@ -192,9 +195,9 @@
         const t1 = sortedTypes[0][0], t2 = sortedTypes[1][0];
         
         document.getElementById('res-type').innerText = `${t1.toUpperCase()} × ${t2.toUpperCase()}`;
-        document.getElementById('res-title').innerText = titleMap[`${t1}_${t2}`] || titleMap[`${t2}_${t1}`] || "未知の音楽探究者";
+        document.getElementById('res-title').innerText = titleMap[`${t1}_${t2}`] || titleMap[`${t2}_${t1}`] || "音楽の探求者";
 
-        // マトリックス計算マッチング
+        // マトリックス判定
         let list = artistMaster.map(artist => {
             let totalPts = 0;
             tags.forEach(t => {
@@ -207,11 +210,10 @@
         const best = list[0];
         const others = list.slice(1, 6);
 
-        // 表示反映
         document.getElementById('best-name').innerText = best.name;
         document.getElementById('yt-link').href = `https://www.youtube.com/results?search_query=${encodeURIComponent(best.name)}`;
         
-        // ハッシュタグ生成
+        // ハッシュタグ表示
         const hashtags = tags.filter(t => best.matrix[t]).map(t => tagDisplay[t]);
         document.getElementById('hashtag-list').innerHTML = hashtags.map(h => `<span class="dna-hashtag">${h}</span>`).join('');
         
