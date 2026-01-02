@@ -6,45 +6,48 @@
     <title>MUSIC DNA - 属性診断</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
-        :root { --bg: #050505; --card-inner: #121212; --accent-l: #6366f1; --accent-r: #ec4899; --text: #ffffff; --text-dim: #a1a1aa; }
+        :root { --bg: #050505; --card-inner: #121212; --accent-l: #818cf8; --accent-r: #f472b6; --text: #ffffff; --text-dim: #a1a1aa; }
         body { font-family: "Inter", "Hiragino Kaku Gothic ProN", sans-serif; background-color: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         header { text-align: center; padding: 60px 0 40px; }
-        header h1 { font-size: 2rem; letter-spacing: 6px; font-weight: 900; margin: 0; background: linear-gradient(90deg, var(--accent-l), var(--accent-r)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .sub-guide { font-size: 0.8rem; color: var(--text-dim); margin-top: 10px; font-weight: 500; }
-        #loading-status { text-align: center; font-size: 0.6rem; color: #4ade80; margin-top: 10px; height: 1em; }
+        header h1 { font-size: 2.2rem; letter-spacing: 4px; font-weight: 900; margin: 0; background: linear-gradient(90deg, var(--accent-l), var(--accent-r)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .sub-guide { font-size: 0.8rem; color: var(--text-dim); margin-top: 10px; font-weight: 500; letter-spacing: 1px; }
+        #loading-status { text-align: center; font-size: 0.6rem; color: #4ade80; margin-top: 10px; height: 1em; opacity: 0.7; }
 
         .question-wrapper { display: flex; flex-direction: column; gap: 20px; margin-bottom: 60px; }
-        .q-container { background: var(--card-inner); border-radius: 20px; padding: 25px; border: 1px solid #27272a; }
-        .q-header { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 15px; display: block; text-align: center; letter-spacing: 2px; }
-        .choice-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .choice-btn { background: #18181b; border: 2px solid #27272a; color: white; padding: 15px 10px; border-radius: 12px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; min-height: 80px; display: flex; align-items: center; justify-content: center; line-height: 1.4; text-align: center; }
-        .choice-btn.active { border-color: var(--accent-l); background: rgba(99, 102, 241, 0.1); }
+        .q-container { background: var(--card-inner); border-radius: 24px; padding: 25px; border: 1px solid #27272a; }
+        .q-header { font-size: 0.65rem; color: var(--accent-l); margin-bottom: 12px; display: block; font-weight: 800; letter-spacing: 2px; }
+        .choice-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .choice-btn { background: #1c1c1f; border: 2px solid #27272a; color: white; padding: 18px 12px; border-radius: 16px; cursor: pointer; font-size: 0.85rem; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); min-height: 90px; display: flex; align-items: center; justify-content: center; line-height: 1.5; text-align: center; font-weight: 500; }
+        .choice-btn.active { border-color: var(--accent-l); background: rgba(129, 140, 248, 0.15); box-shadow: 0 0 20px rgba(129, 140, 248, 0.2); transform: scale(0.98); }
 
-        .analyze-btn { width: 100%; max-width: 300px; background: white; color: black; border: none; padding: 20px; border-radius: 50px; font-size: 1rem; font-weight: 900; cursor: pointer; display: block; margin: 0 auto 100px; }
-        .analyze-btn:disabled { background: #27272a; color: #52525b; }
+        .analyze-btn { width: 100%; max-width: 320px; background: white; color: black; border: none; padding: 22px; border-radius: 50px; font-size: 1.1rem; font-weight: 900; cursor: pointer; display: block; margin: 0 auto 100px; transition: 0.3s; box-shadow: 0 10px 30px rgba(255,255,255,0.1); }
+        .analyze-btn:disabled { background: #27272a; color: #52525b; cursor: not-allowed; box-shadow: none; }
 
-        #result-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; overflow-y: auto; padding: 20px 10px; box-sizing: border-box;}
-        #capture-area { background: #fff; color: #000; border-radius: 32px; overflow: hidden; width: 100%; max-width: 400px; margin: 0 auto; position: relative;}
-        .card-top { background: #000; padding: 30px 20px; text-align: center; color: white; }
-        .card-content { padding: 30px 25px; text-align: center; }
-        .res-type-badge { display: inline-block; font-size: 0.65rem; font-weight: 800; padding: 4px 12px; border: 1px solid #000; border-radius: 4px; margin-bottom: 10px; text-transform: uppercase; color: #000; }
-        .res-title { font-size: 1.4rem; font-weight: 900; color: #000; margin-bottom: 10px; line-height: 1.2; }
-        .res-desc { font-size: 0.85rem; color: #4b5563; margin-bottom: 30px; line-height: 1.6; }
-
-        .match-section-title { font-size: 0.7rem; font-weight: 800; color: #9ca3af; letter-spacing: 1px; margin-bottom: 8px; }
-        .best-artist-display { margin-bottom: 25px; padding: 20px; background: #f9fafb; border-radius: 20px; }
-        .best-name { font-size: 1.6rem; font-weight: 900; color: #000; margin-bottom: 8px; display: block; }
-        .artist-tags-container { display: flex; justify-content: center; gap: 4px; margin-bottom: 12px; flex-wrap: wrap; }
-        .artist-tag-badge { font-size: 0.55rem; font-weight: 900; padding: 2px 8px; border-radius: 4px; background: #000; color: #fff; text-transform: uppercase; }
+        #result-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98); z-index: 1000; overflow-y: auto; padding: 40px 15px; box-sizing: border-box; }
+        #capture-area { background: #fff; color: #000; border-radius: 36px; overflow: hidden; width: 100%; max-width: 420px; margin: 0 auto; position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+        .card-top { background: #000; padding: 35px 20px; text-align: center; color: white; }
+        .card-content { padding: 40px 30px; text-align: center; }
+        .res-type-label { font-size: 0.7rem; font-weight: 900; color: #9ca3af; letter-spacing: 2px; margin-bottom: 5px; }
+        .res-type-badge { font-size: 1.5rem; font-weight: 900; color: #000; margin-bottom: 15px; display: block; }
+        .res-title { font-size: 1.2rem; font-weight: 900; background: #000; color: #fff; display: inline-block; padding: 5px 15px; border-radius: 8px; margin-bottom: 20px; }
         
-        .yt-link { font-size: 0.75rem; text-decoration: none; color: #ff0000; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 4px; }
-        .other-artists-box { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; border-top: 1px solid #eee; padding-top: 20px; margin-top: 10px; }
-        .artist-chip { background: #f3f4f6; padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color: #1f2937; border: 1px solid #e5e7eb; }
+        .best-artist-card { background: #f3f4f6; padding: 25px; border-radius: 28px; margin-bottom: 30px; position: relative; }
+        .best-label { font-size: 0.6rem; font-weight: 800; color: #6b7280; letter-spacing: 1px; margin-bottom: 10px; }
+        .best-name { font-size: 1.8rem; font-weight: 900; color: #000; margin-bottom: 12px; display: block; line-height: 1.2; }
+        .hashtag-container { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 15px; }
+        .dna-hashtag { font-size: 0.75rem; font-weight: 800; color: var(--accent-l); }
+        
+        .yt-button { display: inline-flex; align-items: center; background: #ff0000; color: white; text-decoration: none; padding: 10px 20px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; gap: 6px; }
+        
+        .other-matches { border-top: 1px solid #e5e7eb; padding-top: 25px; }
+        .other-label { font-size: 0.65rem; font-weight: 800; color: #9ca3af; margin-bottom: 15px; }
+        .artist-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+        .chip { background: #fff; border: 1.5px solid #000; padding: 6px 14px; border-radius: 50px; font-size: 0.75rem; font-weight: 800; color: #000; }
 
-        .action-container { width: 100%; max-width: 400px; margin: 20px auto; display: flex; flex-direction: column; gap: 12px; }
-        .save-btn { background: var(--accent-l); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; cursor: pointer; }
-        .retry-text { text-align: center; color: var(--text-dim); font-size: 0.7rem; margin-top: 20px; cursor: pointer; text-decoration: underline; }
+        .action-btns { width: 100%; max-width: 420px; margin: 25px auto; display: flex; flex-direction: column; gap: 15px; }
+        .btn-save { background: linear-gradient(90deg, var(--accent-l), var(--accent-r)); color: white; border: none; padding: 20px; border-radius: 20px; font-weight: 900; cursor: pointer; font-size: 1rem; }
+        .btn-retry { text-align: center; color: var(--text-dim); font-size: 0.8rem; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -52,75 +55,83 @@
 <div class="container">
     <header>
         <h1>MUSIC DNA</h1>
-        <p class="sub-guide">深く考えず、直感で選んでください</p>
+        <p class="sub-guide">あなたの音楽的遺伝子を解析します</p>
         <div id="loading-status">Loading Data...</div>
     </header>
     <div class="question-wrapper" id="q-list"></div>
-    <button id="analyze-btn" class="analyze-btn" disabled onclick="showResult()">分析を開始する</button>
+    <button id="analyze-btn" class="analyze-btn" disabled onclick="showResult()">DNAを解析する</button>
 </div>
 
 <div id="result-overlay">
     <div id="capture-area">
         <div class="card-top">
-            <div style="font-size: 0.5rem; letter-spacing: 3px; color: #71717a;">MUSIC DNA REPORT</div>
-            <div style="font-size: 1rem; font-weight: 900; margin-top: 5px;">CERTIFIED LISTENER</div>
+            <div style="font-size: 0.6rem; letter-spacing: 5px; opacity: 0.6;">GENETIC MUSIC ANALYSIS</div>
+            <div style="font-size: 1.2rem; font-weight: 900; margin-top: 8px;">RESULT REPORT</div>
         </div>
         <div class="card-content">
+            <div class="res-type-label">DNA TYPE</div>
             <div id="res-type" class="res-type-badge">-</div>
             <div id="res-title" class="res-title">-</div>
-            <p id="res-desc" class="res-desc">-</p>
             
-            <div class="best-artist-display">
-                <div class="match-section-title">一番合うアーティスト！</div>
-                <div id="best-match-tags" class="artist-tags-container"></div>
-                <div id="best-match-name" class="best-name">-</div>
-                <a id="yt-search-btn" href="#" target="_blank" class="yt-link">▶ YouTubeで聴く</a>
+            <div class="best-artist-card">
+                <div class="best-label">BEST MATCHING</div>
+                <div id="best-name" class="best-name">-</div>
+                <div id="hashtag-list" class="hashtag-container"></div>
+                <a id="yt-link" href="#" target="_blank" class="yt-button">▶ LISTEN ON YouTube</a>
             </div>
 
-            <div class="other-section">
-                <div class="match-section-title">他のおすすめ</div>
-                <div id="other-match-list" class="other-artists-box"></div>
+            <div class="other-matches">
+                <div class="other-label">RELATED ARTISTS</div>
+                <div id="other-list" class="artist-chips"></div>
             </div>
+            
+            <div style="margin-top: 40px; font-size: 0.55rem; color: #9ca3af; font-weight: 700;">#MUSICDNA #音楽診断</div>
         </div>
     </div>
-    <div class="action-container">
-        <button class="save-btn" onclick="saveAsImage()">📸 結果を画像で保存する</button>
-        <div class="retry-text" onclick="location.reload()">もう一度診断する</div>
+    <div class="action-btns">
+        <button class="btn-save" onclick="saveAsImage()">📸 結果を画像として保存</button>
+        <div class="btn-retry" onclick="location.reload()">RE-TRY</div>
     </div>
 </div>
 
 <script>
+    // ※スプレッドシートのURLをあなたのものに差し替えてください
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRyt_I_8kDlfPnMSxsVSYBcytr3ur76vs7xmF30t01RFQUkAlULzF8P1oLlsFdLcyMZrQCMj3PAANV/pub?output=csv';
     
+    // マトリックス項目定義
+    const tags = ["energy", "deep", "aesthetic", "skill", "dig", "idol", "loud"];
+    
+    const tagDisplay = {
+        energy: "#エネルギー", deep: "#エモい #重低音", aesthetic: "#世界観 #洗練",
+        skill: "#精巧な旋律 #テクニカル", dig: "#インディーズ #未発掘",
+        idol: "#アイドル魂 #推し活", loud: "#爆音中毒 #ラウド"
+    };
+
     const questions = [
-        { id:0, a: "強い音で一気に気持ちを解放したい", b: "感情に寄り添ってくれる曲に身を預けたい", catA: "energy", catB: "deep" },
-        { id:1, a: "場の熱量ごと音楽を浴びたい", b: "音の美しさに静かに浸りたい", catA: "energy", catB: "aesthetic" },
-        { id:2, a: "知らない音楽に出会うとワクワクする", b: "好きな音楽を繰り返し聴く方が落ち着く", catA: "dig", catB: "aesthetic" },
-        { id:3, a: "構成や展開の巧さにゾクッとする", b: "考え込まず、その瞬間の勢いで楽しみたい", catA: "skill", catB: "energy" },
-        { id:4, a: "一つ一つの音や演奏を細かく聴きたい", b: "全体の雰囲気が心地よければそれでいい", catA: "skill", catB: "aesthetic" },
-        { id:5, a: "最初の数秒で完成度を感じたい", b: "聴き終わった後の余韻を大事にしたい", catA: "skill", catB: "aesthetic" },
-        { id:6, a: "感情がむき出しの歌に共感したい", b: "自由な発想やサウンドを取り入れた曲を聴きたい", catA: "deep", catB: "dig" },
-        { id:7, a: "自分の感覚に刺さる音楽を見つけたい", b: "洗練されたセンスを感じる音に惹かれる", catA: "dig", catB: "aesthetic" },
-        { id:8, a: "新しい刺激や未知のジャンルを探したい", b: "演奏やプレイの凄さを味わいたい", catA: "dig", catB: "skill" },
-        { id:9, a: "深夜に一人で静かに浸る音楽", b: "昼間に背中を押してくれる音楽", catA: "deep", catB: "energy" },
-        { id:10, a: "小さいライブハウスで楽しむ音楽が好き", b: "大きな一体感を生む音楽が好き", catA: "dig", catB: "energy" },
-        { id:11, a: "一貫した美意識や世界観を感じたい", b: "予測できない展開や変な音に惹かれる", catA: "aesthetic", catB: "dig" },
-        { id:12, a: "一気に元気をチャージしたい", b: "静かで心地よい時間を過ごしたい", catA: "energy", catB: "aesthetic" },
-        { id:13, a: "感情を直接揺さぶられる瞬間が大事", b: "曲の構成や完成度に感動したい", catA: "deep", catB: "skill" },
-        { id:14, a: "まだ知られていない感じがたまらない", b: "みんなで共有できる熱さがたまらない", catA: "dig", catB: "energy" }
+        { id:0, a: "強い音で一気に気持ちを解放したい", b: "感情に寄り添ってくれる曲に身を預けたい", tagsA: ["energy", "loud"], tagsB: ["deep"] },
+        { id:1, a: "場の熱量ごと音楽を浴びたい", b: "音の美しさに静かに浸りたい", tagsA: ["energy", "idol"], tagsB: ["aesthetic"] },
+        { id:2, a: "知らない音楽に出会うとワクワクする", b: "好きな音楽を繰り返し聴く方が落ち着く", tagsA: ["dig"], tagsB: ["aesthetic"] },
+        { id:3, a: "構成や展開の巧さにゾクッとする", b: "考え込まず、その瞬間の勢いで楽しみたい", tagsA: ["skill"], tagsB: ["energy"] },
+        { id:4, a: "一つ一つの音や演奏を細かく聴きたい", b: "全体の雰囲気が心地よければそれでいい", tagsA: ["skill"], tagsB: ["aesthetic"] },
+        { id:5, a: "最初の数秒で完成度を感じたい", b: "聴き終わった後の余韻を大事にしたい", tagsA: ["skill"], tagsB: ["aesthetic"] },
+        { id:6, a: "感情がむき出しの歌に共感したい", b: "自由な発想やサウンドを取り入れた曲を聴きたい", tagsA: ["deep"], tagsB: ["dig"] },
+        { id:7, a: "自分の感覚に刺さる音楽を見つけたい", b: "洗練されたセンスを感じる音に惹かれる", tagsA: ["dig"], tagsB: ["aesthetic"] },
+        { id:8, a: "新しい刺激や未知のジャンルを探したい", b: "演奏やプレイの凄さを味わいたい", tagsA: ["dig"], tagsB: ["skill"] },
+        { id:9, a: "深夜に一人で静かに浸る音楽", b: "昼間に背中を押してくれる音楽", tagsA: ["deep"], tagsB: ["energy", "idol"] },
+        { id:10, a: "小さいライブハウスで楽しむ音楽が好き", b: "大きな一体感を生む音楽が好き", tagsA: ["dig"], tagsB: ["energy", "idol"] },
+        { id:11, a: "一貫した美意識や世界観を感じたい", b: "予測できない展開や変な音に惹かれる", tagsA: ["aesthetic", "idol"], tagsB: ["dig"] },
+        { id:12, a: "一気に元気をチャージしたい", b: "静かで心地よい時間を過ごしたい", tagsA: ["energy"], tagsB: ["aesthetic"] },
+        { id:13, a: "感情を直接揺さぶられる瞬間が大事", b: "曲の構成や完成度に感動したい", tagsA: ["deep"], tagsB: ["skill"] },
+        { id:14, a: "まだ知られていない感じがたまらない", b: "みんなで共有できる熱さがたまらない", tagsA: ["dig"], tagsB: ["energy", "idol"] }
     ];
 
     const titleMap = {
-        "energy_dig": ["最前線を焼く爆音ハンター", "刺激と熱狂を求めて、未知の才能を掘り続ける開拓者。"],
-        "energy_aesthetic": ["光り輝くステージの目撃者", "派手なパフォーマンスや洗練された美学を愛する。"],
-        "energy_skill": ["精密に狂う情熱のメカニズム", "完璧にコントロールされた狂気と、圧倒的な演奏技術を愛する。"],
-        "energy_deep": ["魂を震わせる情熱の代弁者", "心の叫びを代弁してくれるような、熱いメッセージ性を重視する。"],
-        "dig_aesthetic": ["トレンドの境界を歩く審美家", "常に最先端のセンスを持ち、ジャンルレスに「今かっこいい音」をキャッチする。"],
-        "dig_skill": ["未踏の譜面を解く音の解析官", "誰も真似できない独自の演奏技術や、異質なサウンド構成に快感を覚える。"],
-        "dig_deep": ["ネットの海底を漂う感情の観測者", "自分だけの孤独に寄り添う、まだ見ぬ歌をネットの底で探し続ける。"],
-        "aesthetic_skill": ["完璧な余白を創る音響アーキテクト", "洗練された空気感と、それを支える高度な技巧を愛する。"],
-        "aesthetic_deep": ["月夜に沈む美学の詩人", "美しい言葉選びと綺麗な旋律だけに浸り、自分だけの世界を作る。"],
-        "skill_deep": ["深淵を設計する音響哲学者", "物語性を大事にしつつ、その裏にある複雑な音の重なりを分析する。"]
+        energy_dig: "最前線を焼く爆音ハンター", energy_aesthetic: "光り輝くステージの目撃者",
+        energy_skill: "精密に狂う情熱のメカニズム", energy_deep: "魂を震わせる情熱の代弁者",
+        dig_aesthetic: "トレンドの境界を歩く審美家", dig_skill: "未踏の譜面を解く音の解析官",
+        dig_deep: "ネットの海底を漂う感情の観測者", aesthetic_skill: "完璧な余白を創る音響設計士",
+        aesthetic_deep: "月夜に沈む美学の詩人", skill_deep: "深淵を設計する音響哲学者",
+        energy_idol: "熱狂を創る応援のプロ", loud_energy: "鼓膜を揺らす衝動の塊"
     };
 
     let artistMaster = [];
@@ -132,89 +143,79 @@
             const csvText = await res.text();
             const rows = csvText.split(/\r?\n/).slice(1);
             artistMaster = rows.map(row => {
-                const cols = row.split(',');
+                const cols = row.split(',').map(c => c.trim().replace(/^"|"$/g, ''));
                 if (cols.length < 2) return null;
-                const tags = cols[1].toLowerCase().split(/[,|、\s]/).map(t => t.trim());
-                return { name: cols[0].trim().replace(/^"|"$/g, ''), tags: tags };
+                return {
+                    name: cols[0],
+                    matrix: {
+                        energy: cols[1]==='◎', deep: cols[2]==='◎', aesthetic: cols[3]==='◎',
+                        skill: cols[4]==='◎', dig: cols[5]==='◎', idol: cols[6]==='◎', loud: cols[7]==='◎'
+                    }
+                };
             }).filter(a => a && a.name);
             document.getElementById('loading-status').innerText = `✅ ${artistMaster.length} Artists Synced`;
         } catch(e) {
-            document.getElementById('loading-status').innerText = `❌ Sync Failed`;
+            document.getElementById('loading-status').innerText = `❌ Data Sync Error`;
         }
-        render();
+        renderQuestions();
     }
 
-    function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
-
-    function render() {
+    function renderQuestions() {
         const list = document.getElementById('q-list');
-        const shuffledQuestions = shuffle([...questions]);
-        shuffledQuestions.forEach((q, i) => {
-            const d = document.createElement('div');
-            d.className = 'q-container';
-            d.innerHTML = `<span class="q-header">QUESTION ${i+1}</span><div class="choice-group">
-                <button class="choice-btn" onclick="sel(${q.id},'A',this)">${q.a}</button>
-                <button class="choice-btn" onclick="sel(${q.id},'B',this)">${q.b}</button>
+        const shuffled = [...questions].sort(() => Math.random() - 0.5);
+        shuffled.forEach((q, i) => {
+            const div = document.createElement('div');
+            div.className = 'q-container';
+            div.innerHTML = `<span class="q-header">ANALYSIS NO.${String(i+1).padStart(2,'0')}</span><div class="choice-group">
+                <button class="choice-btn" onclick="select(${q.id},'A',this)">${q.a}</button>
+                <button class="choice-btn" onclick="select(${q.id},'B',this)">${q.b}</button>
             </div>`;
-            list.appendChild(d);
+            list.appendChild(div);
         });
     }
 
-    function sel(id, t, b) {
-        answers[id] = t;
-        Array.from(b.parentElement.children).forEach(btn=>btn.classList.remove('active'));
-        b.classList.add('active');
-        if(!answers.includes(null)) document.getElementById('analyze-btn').disabled = false;
+    function select(id, type, btn) {
+        answers[id] = type;
+        Array.from(btn.parentElement.children).forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (!answers.includes(null)) document.getElementById('analyze-btn').disabled = false;
     }
 
     function showResult() {
-        let scores = {energy:0, deep:0, aesthetic:0, skill:0, dig:0};
-        answers.forEach((ans, i) => scores[ans==='A' ? questions[i].catA : questions[i].catB]++);
-        
-        // --- 判定ロジック ---
-        let netCount = 0;
-        if(answers[6] === 'B') netCount++;
-        if(answers[10] === 'A') netCount++;
-        if(answers[14] === 'A') netCount++;
-        const isNet = netCount >= 2;
-        const isLoud = (answers[0] === 'A' && answers[6] === 'A');
-        const isIdol = (answers[1] === 'A' && answers[11] === 'A');
-
-        const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
-        const t1 = sorted[0][0], t2 = sorted[1][0];
-        
-        document.getElementById('res-type').innerText = `${t1.toUpperCase()}型 / ${t2.toUpperCase()}型`;
-        const res = titleMap[`${t1}_${t2}`] || titleMap[`${t2}_${t1}`] || ["音楽の冒険家", "新しい音との出会いを楽しむ。"];
-        document.getElementById('res-title').innerText = res[0];
-        document.getElementById('res-desc').innerText = res[1];
-
-        let list = artistMaster.map(a => {
-            let pts = 0;
-            if(a.tags.includes(t1)) pts += 10;
-            if(a.tags.includes(t2)) pts += 5;
-            if(isNet && a.tags.includes('internet')) pts += 20;
-            if(isLoud && a.tags.includes('loud')) pts += 15;
-            if(isIdol && a.tags.includes('idol')) pts += 15;
-            return { ...a, score: pts };
+        const userScores = { energy:0, deep:0, aesthetic:0, skill:0, dig:0, idol:0, loud:0 };
+        answers.forEach((ans, i) => {
+            const targetTags = ans === 'A' ? questions[i].tagsA : questions[i].tagsB;
+            targetTags.forEach(t => userScores[t]++);
         });
 
-        list = shuffle(list).sort((a,b) => b.score - a.score);
+        const sortedTypes = Object.entries(userScores).sort((a,b) => b[1] - a[1]);
+        const t1 = sortedTypes[0][0], t2 = sortedTypes[1][0];
+        
+        document.getElementById('res-type').innerText = `${t1.toUpperCase()} × ${t2.toUpperCase()}`;
+        document.getElementById('res-title').innerText = titleMap[`${t1}_${t2}`] || titleMap[`${t2}_${t1}`] || "未知の音楽探究者";
+
+        // マトリックス計算マッチング
+        let list = artistMaster.map(artist => {
+            let totalPts = 0;
+            tags.forEach(t => {
+                if (artist.matrix[t]) totalPts += userScores[t];
+            });
+            return { ...artist, score: totalPts };
+        });
+
+        list = list.sort(() => Math.random() - 0.5).sort((a,b) => b.score - a.score);
         const best = list[0];
         const others = list.slice(1, 6);
 
-        // ベストアーティスト表示（タグバッジ付き）
-        document.getElementById('best-match-name').innerText = best.name;
-        const displayTags = best.tags.filter(t => ['idol','loud','internet','skill','energy','deep','aesthetic','dig'].includes(t));
-        document.getElementById('best-match-tags').innerHTML = displayTags.map(t => `<span class="artist-tag-badge">${t}</span>`).join('');
+        // 表示反映
+        document.getElementById('best-name').innerText = best.name;
+        document.getElementById('yt-link').href = `https://www.youtube.com/results?search_query=${encodeURIComponent(best.name)}`;
         
-        document.getElementById('yt-search-btn').href = `https://www.youtube.com/results?search_query=${encodeURIComponent(best.name)}`;
-        document.getElementById('other-match-list').innerHTML = others.map(a => `<div class="artist-chip">${a.name}</div>`).join('');
+        // ハッシュタグ生成
+        const hashtags = tags.filter(t => best.matrix[t]).map(t => tagDisplay[t]);
+        document.getElementById('hashtag-list').innerHTML = hashtags.map(h => `<span class="dna-hashtag">${h}</span>`).join('');
+        
+        document.getElementById('other-list').innerHTML = others.map(a => `<div class="chip">${a.name}</div>`).join('');
 
         document.getElementById('result-overlay').style.display = 'block';
         window.scrollTo(0,0);
@@ -222,17 +223,12 @@
 
     async function saveAsImage() {
         const area = document.getElementById('capture-area');
-        const canvas = await html2canvas(area, { backgroundColor: '#000', scale: 2 });
+        const canvas = await html2canvas(area, { backgroundColor: '#000', scale: 3 });
         const link = document.createElement('a');
         link.download = 'MUSIC_DNA_RESULT.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     }
-
-    init();
-</script>
-</body>
-</html>
 
     init();
 </script>
