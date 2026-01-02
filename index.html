@@ -28,11 +28,15 @@
         .card-top { background: #000; padding: 30px 20px; text-align: center; color: white; }
         .card-content { padding: 30px 25px; text-align: center; }
         .res-title { font-size: 1.4rem; font-weight: 900; color: #000; margin-bottom: 10px; line-height: 1.2; }
-        .res-desc { font-size: 0.85rem; color: #4b5563; margin-bottom: 25px; }
+        .res-desc { font-size: 0.85rem; color: #4b5563; margin-bottom: 30px; }
 
-        .artist-tag-box { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+        /* マッチング表示エリアの調整 */
+        .match-section-title { font-size: 0.7rem; font-weight: 800; color: #9ca3af; letter-spacing: 1px; margin-bottom: 8px; }
+        .best-artist-display { margin-bottom: 25px; }
+        .best-name { font-size: 1.6rem; font-weight: 900; color: #000; display: inline-block; padding: 5px 20px; border-bottom: 4px solid #000; }
+        
+        .other-artists-box { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; border-top: 1px solid #eee; padding-top: 20px; margin-top: 10px; }
         .artist-chip { background: #f3f4f6; padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color: #1f2937; border: 1px solid #e5e7eb; }
-        .match-perfect { background: #000; color: #fff; border-color: #000; }
 
         .action-container { width: 100%; max-width: 400px; margin: 20px auto; display: flex; flex-direction: column; gap: 12px; }
         .save-btn { background: var(--accent-l); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; cursor: pointer; }
@@ -63,8 +67,16 @@
         <div class="card-content">
             <div id="res-title" class="res-title">-</div>
             <p id="res-desc" class="res-desc">-</p>
-            <div style="font-size: 0.5rem; font-weight: 800; color: #9ca3af; letter-spacing: 2px; margin-bottom: 10px;">DNA MATCH ARTISTS</div>
-            <div id="artist-match-list" class="artist-tag-box"></div>
+            
+            <div class="best-artist-display">
+                <div class="match-section-title">一番合うアーティストはこちら！</div>
+                <div id="best-match-name" class="best-name">Searching...</div>
+            </div>
+
+            <div class="other-section">
+                <div class="match-section-title">他はこれがおすすめ！</div>
+                <div id="other-match-list" class="other-artists-box"></div>
+            </div>
         </div>
     </div>
     <div class="action-container">
@@ -80,6 +92,7 @@
 <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRyt_I_8kDlfPnMSxsVSYBcytr3ur76vs7xmF30t01RFQUkAlULzF8P1oLlsFdLcyMZrQCMj3PAANV/pub?output=csv';
     
+    // （questions, titleMap は前回と同じです）
     const questions = [
         { a: "爆音のロックで解放されたい", b: "一緒に沈んでくれる曲に救われたい", catA: "energy", catB: "deep" },
         { a: "ライブで盛り上がるナンバー", b: "お洒落で洗練されたチルな時間", catA: "energy", catB: "aesthetic" },
@@ -156,7 +169,6 @@
         if(!answers.includes(null)) document.getElementById('analyze-btn').disabled = false;
     }
 
-    // シャッフル関数
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -175,37 +187,44 @@
         document.getElementById('res-title').innerText = res[0];
         document.getElementById('res-desc').innerText = res[1];
 
-        // マッチングロジックの改善
-        let score15 = []; // 2つとも一致
-        let score10 = []; // 1位属性が一致
-        let score5 = [];  // 2位属性が一致
+        // 候補の分類
+        let score15 = []; let score10 = []; let score5 = [];
 
         artistMaster.forEach(a => {
             let pts = 0;
             if(a.tags.some(tag => tag.includes(t1))) pts += 10;
             if(a.tags.some(tag => tag.includes(t2))) pts += 5;
-
             if(pts === 15) score15.push(a);
             else if(pts === 10) score10.push(a);
             else if(pts === 5) score5.push(a);
         });
 
-        // 各グループ内をランダムにシャッフルし、優先順位に従って結合
-        const finalMatched = [
+        // シャッフルして優先順位順に結合
+        const pool = [
             ...shuffleArray(score15),
             ...shuffleArray(score10),
             ...shuffleArray(score5)
-        ].slice(0, 5); // 最大5件に制限
+        ];
 
-        const listContainer = document.getElementById('artist-match-list');
-        if (finalMatched.length === 0) {
-            listContainer.innerHTML = '<p style="font-size:0.7rem; color:#999;">あなたの感性は唯一無二のようです。</p>';
+        // 1番目を「最高の相性」として抽出
+        const bestOne = pool.length > 0 ? pool[0] : null;
+        // 2番目以降の最大4件を「おすすめ」として抽出
+        const others = pool.slice(1, 5);
+
+        // 表示：一番合うアーティスト
+        const bestLabel = document.getElementById('best-match-name');
+        if (bestOne) {
+            bestLabel.innerText = bestOne.name;
         } else {
-            listContainer.innerHTML = finalMatched.map(a=> {
-                // スコア計算を再実行してスタイルを決める
-                let isPerfect = a.tags.some(t => t.includes(t1)) && a.tags.some(t => t.includes(t2));
-                return `<div class="artist-chip ${isPerfect ? 'match-perfect' : ''}">${a.name}</div>`;
-            }).join('');
+            bestLabel.innerText = "唯一無二の感性";
+        }
+
+        // 表示：他のおすすめ
+        const listContainer = document.getElementById('other-match-list');
+        if (others.length === 0) {
+            listContainer.innerHTML = '<p style="font-size:0.7rem; color:#999;">他に見つかりませんでした</p>';
+        } else {
+            listContainer.innerHTML = others.map(a => `<div class="artist-chip">${a.name}</div>`).join('');
         }
 
         document.getElementById('result-overlay').style.display = 'block';
