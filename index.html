@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MUSIC DNA - 究極の音楽属性診断</title>
+    <title>MUSIC DNA - 属性診断</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         :root { --bg: #050505; --card-inner: #121212; --accent-l: #6366f1; --accent-r: #ec4899; --text: #ffffff; --text-dim: #a1a1aa; }
@@ -18,7 +18,7 @@
         .q-container { background: var(--card-inner); border-radius: 20px; padding: 25px; border: 1px solid #27272a; }
         .q-header { font-size: 0.7rem; color: var(--text-dim); margin-bottom: 15px; display: block; text-align: center; letter-spacing: 2px; }
         .choice-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .choice-btn { background: #18181b; border: 2px solid #27272a; color: white; padding: 15px 10px; border-radius: 12px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; min-height: 80px; display: flex; align-items: center; justify-content: center; line-height: 1.4; }
+        .choice-btn { background: #18181b; border: 2px solid #27272a; color: white; padding: 15px 10px; border-radius: 12px; cursor: pointer; font-size: 0.8rem; transition: 0.2s; min-height: 80px; display: flex; align-items: center; justify-content: center; line-height: 1.4; text-align: center; }
         .choice-btn.active { border-color: var(--accent-l); background: rgba(99, 102, 241, 0.1); }
 
         .analyze-btn { width: 100%; max-width: 300px; background: white; color: black; border: none; padding: 20px; border-radius: 50px; font-size: 1rem; font-weight: 900; cursor: pointer; display: block; margin: 0 auto 100px; }
@@ -28,22 +28,20 @@
         #capture-area { background: #fff; color: #000; border-radius: 32px; overflow: hidden; width: 100%; max-width: 400px; margin: 0 auto; position: relative;}
         .card-top { background: #000; padding: 30px 20px; text-align: center; color: white; }
         .card-content { padding: 30px 25px; text-align: center; }
-        .res-type-badge { display: inline-block; font-size: 0.65rem; font-weight: 800; padding: 4px 12px; border: 1px solid #000; border-radius: 4px; margin-bottom: 10px; text-transform: uppercase; }
+        .res-type-badge { display: inline-block; font-size: 0.65rem; font-weight: 800; padding: 4px 12px; border: 1px solid #000; border-radius: 4px; margin-bottom: 10px; text-transform: uppercase; color: #000; }
         .res-title { font-size: 1.4rem; font-weight: 900; color: #000; margin-bottom: 10px; line-height: 1.2; }
         .res-desc { font-size: 0.85rem; color: #4b5563; margin-bottom: 30px; line-height: 1.6; }
 
         .match-section-title { font-size: 0.7rem; font-weight: 800; color: #9ca3af; letter-spacing: 1px; margin-bottom: 8px; }
         .best-artist-display { margin-bottom: 25px; }
-        .best-name-wrapper { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-        .best-name { font-size: 1.6rem; font-weight: 900; color: #000; border-bottom: 4px solid #000; padding: 0 10px; }
-        .yt-link { font-size: 0.7rem; text-decoration: none; color: #ff0000; font-weight: 800; display: flex; align-items: center; gap: 4px; }
+        .best-name { font-size: 1.6rem; font-weight: 900; color: #000; border-bottom: 4px solid #000; display: inline-block; padding: 0 10px; margin-bottom: 10px;}
+        .yt-link { font-size: 0.75rem; text-decoration: none; color: #ff0000; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 4px; }
         
         .other-artists-box { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; border-top: 1px solid #eee; padding-top: 20px; margin-top: 10px; }
         .artist-chip { background: #f3f4f6; padding: 5px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; color: #1f2937; border: 1px solid #e5e7eb; }
 
         .action-container { width: 100%; max-width: 400px; margin: 20px auto; display: flex; flex-direction: column; gap: 12px; }
         .save-btn { background: var(--accent-l); color: white; border: none; padding: 18px; border-radius: 16px; font-weight: 800; cursor: pointer; }
-        .sns-btn { padding: 12px; border-radius: 12px; text-decoration: none; color: white; font-size: 0.7rem; font-weight: 800; text-align: center; background: #111; border: 1px solid rgba(255,255,255,0.2); }
         .retry-text { text-align: center; color: var(--text-dim); font-size: 0.7rem; margin-top: 20px; cursor: pointer; text-decoration: underline; }
     </style>
 </head>
@@ -72,10 +70,8 @@
             
             <div class="best-artist-display">
                 <div class="match-section-title">一番合うアーティストはこちら！</div>
-                <div class="best-name-wrapper">
-                    <div id="best-match-name" class="best-name">-</div>
-                    <a id="yt-search-btn" href="#" target="_blank" class="yt-link">▶ YouTubeで聴く</a>
-                </div>
+                <div id="best-match-name" class="best-name">-</div>
+                <a id="yt-search-btn" href="#" target="_blank" class="yt-link">▶ YouTubeでこの人を聴く</a>
             </div>
 
             <div class="other-section">
@@ -86,7 +82,6 @@
     </div>
     <div class="action-container">
         <button class="save-btn" onclick="saveAsImage()">📸 結果を画像で保存する</button>
-        <a id="share-x" href="#" target="_blank" class="sns-btn">結果をXでシェア</a>
         <div class="retry-text" onclick="location.reload()">もう一度診断する</div>
     </div>
 </div>
@@ -94,40 +89,36 @@
 <script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRRyt_I_8kDlfPnMSxsVSYBcytr3ur76vs7xmF30t01RFQUkAlULzF8P1oLlsFdLcyMZrQCMj3PAANV/pub?output=csv';
     
-    // 改訂版：15問の質問構成
+    // 15問の質問構成
     const questions = [
-        { a: "爆音のロックで解放されたい", b: "一緒に沈んでくれる曲に救われたい", catA: "energy", catB: "deep" },
-        { a: "ライブで全力で盛り上がりたい", b: "お洒落で洗練された曲に浸りたい", catA: "energy", catB: "aesthetic" },
-        { a: "歌詞を噛み締め深く考察したい", b: "理屈抜きに音の響きに酔いたい", catA: "deep", catB: "aesthetic" },
-        { a: "複雑な構成に脳がゾクゾクする", b: "直感的な曲に勝手に体が動く", catA: "skill", catB: "energy" },
-        { a: "楽器単体の凄さを聴き込みたい", b: "ボーカルや全体の雰囲気が大事", catA: "skill", catB: "aesthetic" },
-        { a: "「これだ！」と思わせるイントロが命", b: "曲全体の空気感や余韻が大事", catA: "skill", catB: "aesthetic" },
-        { a: "恋愛の曲や生々しい感情に共感したい", b: "ネット発の独自の文化や音を楽しみたい", catA: "deep", catB: "dig" },
-        { a: "無名のインディーズを掘り起こしたい", b: "洗練された最新トレンドを浴びたい", catA: "dig", catB: "aesthetic" },
-        { a: "常に新しい刺激や新ジャンルを掘りたい", b: "各楽器のプレイが際立つ曲が好き", catA: "dig", catB: "skill" },
-        { a: "深夜に一人で深く浸る音楽", b: "晴天のドライブに背中を押す音楽", catA: "deep", catB: "energy" },
-        { a: "SNSや動画から現れるネット発が好き", b: "テレビやフェスで輝くスターが好き", catA: "dig", catB: "energy" }, // Q11
-        { a: "コンセプチュアルな「美学」が好き", b: "予測不能で「変な音」が鳴る音楽が好き", catA: "aesthetic", catB: "dig" },
-        { a: "爆発的な元気をチャージしたい", b: "優雅で心地よい安らぎがほしい", catA: "energy", catB: "aesthetic" },
-        { a: "心を揺さぶるのは「魂の叫び」", b: "心を揺さぶるのは「音の構築美」", catA: "deep", catB: "skill" },
-        { a: "自分だけが知る特別感が大事", b: "みんなで熱くなる一体感が大事", catA: "dig", catB: "energy" }
+        { id:0, a: "強い音で一気に気持ちを解放したい", b: "感情に寄り添ってくれる曲に身を預けたい", catA: "energy", catB: "deep" },
+        { id:1, a: "場の熱量ごと音楽を浴びたい", b: "音の美しさに静かに浸りたい", catA: "energy", catB: "aesthetic" },
+        { id:2, a: "知らない音楽に出会うとワクワクする", b: "好きな音楽を繰り返し聴く方が落ち着く", catA: "dig", catB: "aesthetic" },
+        { id:3, a: "構成や展開の巧さにゾクッとする", b: "考え込まず、その瞬間の勢いで楽しみたい", catA: "skill", catB: "energy" },
+        { id:4, a: "一つ一つの音や演奏を細かく聴きたい", b: "全体の雰囲気が心地よければそれでいい", catA: "skill", catB: "aesthetic" },
+        { id:5, a: "最初の数秒で完成度を感じたい", b: "聴き終わった後の余韻を大事にしたい", catA: "skill", catB: "aesthetic" },
+        { id:6, a: "感情がむき出しの歌に共感したい", b: "自由な発想やサウンドを取り入れた曲を聴きたい", catA: "deep", catB: "dig" }, // BがInternet
+        { id:7, a: "自分の感覚に刺さる音楽を見つけたい", b: "洗練されたセンスを感じる音に惹かれる", catA: "dig", catB: "aesthetic" },
+        { id:8, a: "新しい刺激や未知のジャンルを探したい", b: "演奏やプレイの凄さを味わいたい", catA: "dig", catB: "skill" },
+        { id:9, a: "深夜に一人で静かに浸る音楽", b: "昼間に背中を押してくれる音楽", catA: "deep", catB: "energy" },
+        { id:10, a: "小さいライブハウスで楽しむ音楽が好き", b: "大きな一体感を生む音楽が好き", catA: "dig", catB: "energy" }, // AがInternet
+        { id:11, a: "一貫した美意識や世界観を感じたい", b: "予測できない展開や変な音に惹かれる", catA: "aesthetic", catB: "dig" },
+        { id:12, a: "一気に元気をチャージしたい", b: "静かで心地よい時間を過ごしたい", catA: "energy", catB: "aesthetic" },
+        { id:13, a: "感情を直接揺さぶられる瞬間が大事", b: "曲の構成や完成度に感動したい", catA: "deep", catB: "skill" },
+        { id:14, a: "まだ知られていない感じがたまらない", b: "みんなで共有できる熱さがたまらない", catA: "dig", catB: "energy" }  // AがInternet
     ];
 
     const titleMap = {
-        "energy_skill": ["超絶技巧の熱狂的マエストロ", "激しさの中にある緻密な技術や構成の凄さを見抜く耳の持ち主。"],
         "energy_dig": ["最前線を焼く爆音ハンター", "刺激と熱狂を求めて、未知の才能を掘り続ける開拓者。"],
-        "energy_deep": ["魂を震わせる情熱の代弁者", "明るい曲の中にも深いメッセージ性を求め、全力で感情移入する。"],
         "energy_aesthetic": ["光り輝くステージの目撃者", "派手なパフォーマンスや洗練された美学を愛する。"],
-        "deep_skill": ["深淵を設計する音響哲学者", "物語性を大事にしつつ、その裏にある複雑な音の重なりを分析する。"],
-        "deep_dig": ["ネットの海底を漂う感情の観測者", "自分だけの孤独に寄り添う、まだ見ぬ歌をネットの底で探し続ける。"],
-        "deep_energy": ["静寂を切り裂く心の革命家", "内側に強い熱量を秘めており、エモーショナルな爆音に救いを見出す。"],
-        "deep_aesthetic": ["月夜に沈む美学の詩人", "美しい言葉選びと綺麗な旋律だけに浸り、自分だけの世界を作る。"],
+        "energy_skill": ["精密に狂う情熱のメカニズム", "完璧にコントロールされた狂気と、圧倒的な演奏技術を愛する。"],
+        "energy_deep": ["魂を震わせる情熱の代弁者", "心の叫びを代弁してくれるような、熱いメッセージ性を重視する。"],
+        "dig_aesthetic": ["トレンドの境界を歩く審美家", "常に最先端のセンスを持ち、ジャンルレスに「今かっこいい音」をキャッチする。"],
+        "dig_skill": ["未踏の譜面を解く音の解析官", "誰も真似できない独自の演奏技術や、異質なサウンド構成に快感を覚える。"],
+        "dig_deep": ["ネットの海底を漂う感情の観測者", "自分だけの孤独に寄り添う、まだ見ぬ歌をネットの底で探し続ける。"],
         "aesthetic_skill": ["完璧な余白を創る音響アーキテクト", "洗練された空気感と、それを支える高度な技巧を愛する。"],
-        "aesthetic_dig": ["トレンドの境界を歩く審美家", "常に最先端のセンスを持ち、ジャンルレスに「今かっこいい音」をキャッチする。"],
-        "aesthetic_energy": ["鮮やかに踊るアーバン・ダンサー", "洗練されたビートを好み、音楽で日常を鮮やかに彩る。"],
-        "aesthetic_deep": ["黄昏に寄り添うエモ・ドリーマー", "切ない歌詞に弱く、音楽を聴くことで物語の中に没入したい人。"],
-        "skill_dig": ["未踏の譜面を解く音の解析官", "誰も真似できない独自の演奏技術や、異質なサウンド構成に快感を覚える。"],
-        "skill_energy": ["精密に狂う情熱のメカニズム", "理性的でありながら熱い。完璧にコントロールされた狂気を愛する。"]
+        "aesthetic_deep": ["月夜に沈む美学の詩人", "美しい言葉選びと綺麗な旋律だけに浸り、自分だけの世界を作る。"],
+        "skill_deep": ["深淵を設計する音響哲学者", "物語性を大事にしつつ、その裏にある複雑な音の重なりを分析する。"]
     };
 
     let artistMaster = [];
@@ -141,7 +132,7 @@
             artistMaster = rows.map(row => {
                 const cols = row.split(',');
                 if (cols.length < 2) return null;
-                const tags = cols[1].toLowerCase().replace(/[．。、]/g, ',').split(/[,.]/).map(t => t.trim());
+                const tags = cols[1].toLowerCase().split(/[,|、\s]/).map(t => t.trim());
                 return { name: cols[0].trim().replace(/^"|"$/g, ''), tags: tags };
             }).filter(a => a && a.name);
             document.getElementById('loading-status').innerText = `✅ ${artistMaster.length} Artists Synced`;
@@ -151,27 +142,7 @@
         render();
     }
 
-    function render() {
-        const list = document.getElementById('q-list');
-        questions.forEach((q, i) => {
-            const d = document.createElement('div');
-            d.className = 'q-container';
-            d.innerHTML = `<span class="q-header">Phase ${i+1}</span><div class="choice-group">
-                <button class="choice-btn" onclick="sel(${i},'A',this)">${q.a}</button>
-                <button class="choice-btn" onclick="sel(${i},'B',this)">${q.b}</button>
-            </div>`;
-            list.appendChild(d);
-        });
-    }
-
-    function sel(i, t, b) {
-        answers[i] = t;
-        Array.from(b.parentElement.children).forEach(btn=>btn.classList.remove('active'));
-        b.classList.add('active');
-        if(!answers.includes(null)) document.getElementById('analyze-btn').disabled = false;
-    }
-
-    function shuffleArray(array) {
+    function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
@@ -179,51 +150,66 @@
         return array;
     }
 
-    function showResult() {
-        let s = {energy:0, deep:0, aesthetic:0, skill:0, dig:0};
-        answers.forEach((ans, i) => s[ans==='A'?questions[i].catA:questions[i].catB]++);
+    function render() {
+        const list = document.getElementById('q-list');
+        // 質問の順番をシャッフル
+        const shuffledQuestions = shuffle([...questions]);
         
-        // Q11(index 10)でAを選んだかチェック
-        const prefersInternet = (answers[10] === 'A');
+        shuffledQuestions.forEach((q, i) => {
+            const d = document.createElement('div');
+            d.className = 'q-container';
+            d.innerHTML = `<span class="q-header">QUESTION ${i+1}</span><div class="choice-group">
+                <button class="choice-btn" onclick="sel(${q.id},'A',this)">${q.a}</button>
+                <button class="choice-btn" onclick="sel(${q.id},'B',this)">${q.b}</button>
+            </div>`;
+            list.appendChild(d);
+        });
+    }
 
-        const sorted = Object.entries(s).sort((a,b)=>b[1]-a[1]);
+    function sel(originalId, type, btn) {
+        answers[originalId] = type;
+        Array.from(btn.parentElement.children).forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        if(!answers.includes(null)) document.getElementById('analyze-btn').disabled = false;
+    }
+
+    function showResult() {
+        let scores = {energy:0, deep:0, aesthetic:0, skill:0, dig:0};
+        answers.forEach((ans, i) => scores[ans==='A' ? questions[i].catA : questions[i].catB]++);
+        
+        // インターネット判定ロジック（Q7-B, Q11-A, Q15-Aのうち2つ以上）
+        let netCount = 0;
+        if(answers[6] === 'B') netCount++;
+        if(answers[10] === 'A') netCount++;
+        if(answers[14] === 'A') netCount++;
+        const isInternetUser = netCount >= 2;
+
+        const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
         const t1 = sorted[0][0], t2 = sorted[1][0];
         
-        // 表示用タイプ
-        document.getElementById('res-type').innerText = `${t1}型 / ${t2}型`;
+        document.getElementById('res-type').innerText = `${t1.toUpperCase()}型 / ${t2.toUpperCase()}型`;
         
-        const res = titleMap[`${t1}_${t2}`] || titleMap[`${t2}_${t1}`] || ["音楽の冒険家", "未知の音を求める者。"];
+        const res = titleMap[`${t1}_${t2}`] || titleMap[`${t2}_${t1}`] || ["音楽の冒険家", "常に新しい音との出会いを楽しむリスナー。"];
         document.getElementById('res-title').innerText = res[0];
         document.getElementById('res-desc').innerText = res[1];
 
-        // マッチング計算（スコア制）
-        let scoredArtists = artistMaster.map(a => {
+        // アーティストマッチング
+        let list = artistMaster.map(a => {
             let pts = 0;
-            if(a.tags.some(tag => tag.includes(t1))) pts += 10;
-            if(a.tags.some(tag => tag.includes(t2))) pts += 5;
-            // インターネット優先ロジック: ネット発を選び、かつタグにinternetがある場合
-            if(prefersInternet && a.tags.some(tag => tag.includes('internet'))) {
-                // すでに属性が1つでも合致していれば、大幅加点して優先
-                if(pts > 0) pts += 20; 
-            }
+            if(a.tags.includes(t1)) pts += 10;
+            if(a.tags.includes(t2)) pts += 5;
+            // インターネット優先フラグ適用
+            if(isInternetUser && a.tags.includes('internet')) pts += 20; 
             return { ...a, score: pts };
         });
 
-        // スコア順（同点はシャッフル）にソート
-        scoredArtists = shuffleArray(scoredArtists).sort((a,b) => b.score - a.score);
+        list = shuffle(list).sort((a,b) => b.score - a.score);
+        const best = list[0];
+        const others = list.slice(1, 6);
 
-        const bestOne = scoredArtists[0];
-        const others = scoredArtists.slice(1, 5);
-
-        // 1位の表示
-        if (bestOne) {
-            document.getElementById('best-match-name').innerText = bestOne.name;
-            document.getElementById('yt-search-btn').href = `https://www.youtube.com/results?search_query=${encodeURIComponent(bestOne.name)}`;
-        }
-
-        // 他の表示
-        const listContainer = document.getElementById('other-match-list');
-        listContainer.innerHTML = others.map(a => `<div class="artist-chip">${a.name}</div>`).join('');
+        document.getElementById('best-match-name').innerText = best.name;
+        document.getElementById('yt-search-btn').href = `https://www.youtube.com/results?search_query=${encodeURIComponent(best.name)}`;
+        document.getElementById('other-match-list').innerHTML = others.map(a => `<div class="artist-chip">${a.name}</div>`).join('');
 
         document.getElementById('result-overlay').style.display = 'block';
         window.scrollTo(0,0);
@@ -233,7 +219,7 @@
         const area = document.getElementById('capture-area');
         const canvas = await html2canvas(area, { backgroundColor: '#000', scale: 2 });
         const link = document.createElement('a');
-        link.download = 'MUSIC_DNA.png';
+        link.download = 'MUSIC_DNA_RESULT.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
     }
